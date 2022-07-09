@@ -14,7 +14,6 @@ function addDynamicContentToHomePage() {
     let wordSetListHtml = '';
 
     wordSets.forEach(item => {
-        //const path = `/word-set/${item.id}`;
         wordSetListHtml += `
             <li>   
                 <a href="/words-learning/word-set/${item.id}" onclick="route()">${item.name}</a>
@@ -36,7 +35,7 @@ function addDynamicContentToWordSetPage(index) {
     axios.get(`http://localhost:8080/word-sets/${wordSets[index].id}/`)
         .then(serverData => {
             currentWordSet = serverData.data;
-            console.log(currentWordSet);
+            console.log(currentWordSet.words);
         }).then(() => {
 
             let wordsHtml = '';
@@ -59,18 +58,27 @@ function addDynamicContentToTrainingPage(index) {
         resultText = document.querySelector('.result-text'),
         previousWord = document.querySelector('.previous-word'),
         previousWordContent = document.querySelector('.previous-word-content'),
+        training = document.querySelector('.training'),
         wordInput = document.querySelector('#word-input'),
         wordLabel = document.querySelector('#word-label'),
         trainingForm = document.querySelector('#training-form'),
-        hint = document.querySelector('#hint');
-
+        hint = document.querySelector('#hint'),
+        trainingEnd = document.querySelector('.training-end'),
+        trainAgain = document.querySelector('#train-again');
     trainingTitle.textContent = `Training "${currentWordSet.name}"`;
 
     hide(result);
     hide(previousWord);
+    hide(trainingEnd);
 
-    let word = currentWordSet.words[getRandomInt(currentWordSet.words.length)],
-        nextWord;
+     trainAgain.href = `/words-learning/word-set/${wordSets[index].id}/training`;
+
+    let words = currentWordSet.words;
+    words = words.sort((a, b) => 0.5 - Math.random());
+    console.log(words);
+    let currentIndex = 0;
+
+    let word = words[0];
 
     wordLabel.textContent = word.translation;
 
@@ -83,7 +91,6 @@ function addDynamicContentToTrainingPage(index) {
         e.preventDefault();
         show(result);
 
-
         if (wordInput.value === word.name) {
             resultText.textContent = 'Right!';
             resultText.classList.add('result-right');
@@ -95,8 +102,6 @@ function addDynamicContentToTrainingPage(index) {
             hide(previousWord);
             return;
         }
-
-        show(previousWord);
 
         let examples = '';
         word.examples.forEach(item => {
@@ -112,13 +117,17 @@ function addDynamicContentToTrainingPage(index) {
         }
         previousWordContent.innerHTML = previousWordHtml;
 
-        do {
-            nextWord = currentWordSet.words[getRandomInt(currentWordSet.words.length)];
-        } while (currentWordSet.words.length > 1 && nextWord.name === word.name);
-        word = nextWord;
-        wordInput.value = '';
-        wordLabel.textContent = word.translation;
+        show(previousWord);
 
+        if (currentIndex < words.length - 1) {
+            currentIndex++;
+            word = words[currentIndex];
+            wordInput.value = '';
+            wordLabel.textContent = word.translation;
+        } else {
+            hide(training);
+            show(trainingEnd);
+        }
     });
 }
 
@@ -179,11 +188,10 @@ window.route = route;
 initData();
 
 function initData() {
-    //axios.get('http://localhost:3000/data')
+    // wordSets = axios.get('http://localhost:3000/data')
     wordSets = axios.get('http://localhost:8080/word-sets/')
         .then(data => {
             wordSets = data.data;
-            console.log(wordSets);
             handleLocation();
         });
 }
@@ -192,6 +200,5 @@ function getWordSet(id) {
     axios.get(`http://localhost:8080/word-sets/${id}/`)
         .then(serverData => {
             currentWordSet = serverData.data;
-            console.log(currentWordSet);
         });
 }

@@ -13,13 +13,18 @@
             examples: In order to discuss scalability, we first need ways of discribing load and performance quantitatively
         </div>
     </div>
-    <div class="trainig">
+    <div class="training">
         <h2>Write a word</h2>
         <form id="training-form">
             <label id="word-label" for="word-input">шаблонный</label>
-            <input id="word-input" type="text" autocomplete="off">
+            <input id="word-input" type="text" autocomplete="off" autofocus="autofocus">
             <div><a id="hint" href="#">hint</a></div>
             <input id="word-submit" type="submit" value="submit">
         </form>
+    </div>
+    <div class="training-end">
+        <h2>Congratulations! Training is over!</h2>
+        <a href="/words-learning/" onclick="route()">Go to word sets</a>
+        <a href="" onclick="route()" id="train-again">Train again</a>
     </div>
 </div>
