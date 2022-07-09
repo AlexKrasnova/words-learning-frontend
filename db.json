@@ -1,0 +1,94 @@
+{
+    "data": [{
+            "id": 1,
+            "name": "My set 1",
+            "creationTime": "2022-07-11T18:42:22.111Z",
+            "words": [{
+                    "id": 1,
+                    "name": "time",
+                    "translation": "время",
+                    "examples": ["What time is it?", "What time is it?"]
+                },
+                {
+                    "id": 2,
+                    "name": "speed",
+                    "translation": "скорость",
+                    "examples": ["The car speed is 60 km/h."]
+                },
+                {
+                    "id": 3,
+                    "name": "cat",
+                    "translation": "кошка",
+                    "examples": ["Dogs hate cats."]
+                },
+                {
+                    "id": 4,
+                    "name": "dog",
+                    "translation": "собака",
+                    "examples": ["Dogs hate cats."]
+                },
+                {
+                    "id": 5,
+                    "name": "expectation",
+                    "translation": "ожидание",
+                    "examples": []
+                },
+                {
+                    "id": 6,
+                    "name": "pride",
+                    "translation": "гордость",
+                    "examples": ["Pride and prejudice."]
+                },
+                {
+                    "id": 7,
+                    "name": "prejudice",
+                    "translation": "предубеждение",
+                    "examples": ["Pride and prejudice."]
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "My set 2",
+            "creationTime": "2022-07-11T18:42:22.111Z",
+            "words": [{
+                    "id": 1,
+                    "name": "infatuation",
+                    "translation": "страстное увлечение",
+                    "examples": []
+                },
+                {
+                    "id": 2,
+                    "name": "manual",
+                    "translation": "руководство",
+                    "examples": ["Read the manual before you try to assemble the furniture."]
+                },
+                {
+                    "id": 3,
+                    "name": "mother",
+                    "translation": "мать",
+                    "examples": []
+                },
+                {
+                    "id": 4,
+                    "name": "father",
+                    "translation": "отец",
+                    "examples": []
+                },
+                {
+                    "id": 5,
+                    "name": "grandmother",
+                    "translation": "бабушка",
+                    "examples": []
+                },
+                {
+                    "id": 6,
+                    "name": "grandfather",
+                    "translation": "дедушка",
+                    "examples": []
+                }
+            ]
+        }
+    ]
+
+}
