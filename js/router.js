@@ -2,17 +2,19 @@
 import addDynamicContentToHomePage from './modules/homePage';
 import addDynamicContentToWordSetPage from './modules/wordSetPage';
 import addDynamicContentToTrainingPage from './modules/trainingPage';
+import {getWordSets} from './modules/db';
 
 const routes = {
     404: "/words-learning/pages/404.html",
-    "/words-learning/": "/words-learning/pages/index.html"
+    "/words-learning/": "/words-learning/pages/index.html",
+    "/words-learning/lorem/": "/words-learning/pages/lorem.html"
 };
 
 const route = (event) => {
     event = event || window.event;
     event.preventDefault();
     window.history.pushState({}, "", event.target.href);
-    handleLocation();
+    updateDynamicRoutesAndHandleLocation();
 };
 
 const handleLocation = async () => {
@@ -21,21 +23,47 @@ const handleLocation = async () => {
     const html = await axios.get(route).then((data) => data.data);
     document.getElementById("main-page").innerHTML = html;
 
+    if(route === routes[404]) {
+        return;
+    }
+    
     if (path === "/words-learning/") {
         addDynamicContentToHomePage(routes);
     }
 
-    if (path.replace(/\d/g, '') === '/words-learning/word-set/') {
+    if (path.replace(/\d/g, '') === '/words-learning/word-sets/') {
         addDynamicContentToWordSetPage(+path.replace(/\D/g, ''));
     }
 
-    if (path.replace(/\d/g, '') === '/words-learning/word-set//training') {
+    if (path.replace(/\d/g, '') === '/words-learning/word-sets//training') {
         addDynamicContentToTrainingPage(+path.replace(/\D/g, ''));
     }
 };
 
-window.onpopstate = handleLocation;
+const updateDynamicRoutesAndHandleLocation = () => {
+    
+    for(const key in routes) {
+         delete routes[key];
+    }
+
+    routes[404] = "/words-learning/pages/404.html";
+    routes["/words-learning/"] =  "/words-learning/pages/index.html";
+    routes["/words-learning/lorem/"]= "/words-learning/pages/lorem.html";
+
+    getWordSets()
+        .then(wordSets => {
+            wordSets.forEach(item => {
+                routes[`/words-learning/word-sets/${item.id}`] = '/words-learning/pages/word-set.html';
+                routes[`/words-learning/word-sets/${item.id}/training`] = '/words-learning/pages/training.html';
+            });
+            
+        })
+        .then(() => {
+            handleLocation();
+        });
+};
+
+window.onpopstate = updateDynamicRoutesAndHandleLocation;
 window.route = route;
 
-
-handleLocation();
+updateDynamicRoutesAndHandleLocation();

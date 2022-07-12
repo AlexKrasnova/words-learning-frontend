@@ -1,0 +1,11 @@
+# To be inside the /Directory
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteRule ^index\.html$ - [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !^/words-learning/js/.*$
+    RewriteCond %{REQUEST_FILENAME} !^/words-learning/css/.*$
+    RewriteRule . /words-learning/index.html [L]
+ </IfModule>

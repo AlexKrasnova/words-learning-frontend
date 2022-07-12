@@ -4,7 +4,7 @@ function addDynamicContentToWordSetPage(id) {
     const wordSetTitle = document.querySelector('.word-set-title'),
           words = document.querySelector('.words'),
           training = document.querySelector('.training-button');
-
+    
     getWordSet(id)
         .then(data => {
             let currentWordSet = data;

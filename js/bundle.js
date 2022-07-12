@@ -52,11 +52,11 @@ function addDynamicContentToHomePage(routes) {
             wordSets.forEach(item => {
                 wordSetListHtml += `
                     <li>   
-                        <a href="/words-learning/word-set/${item.id}" onclick="route()">${item.name}</a>
+                        <a href="/words-learning/word-sets/${item.id}" onclick="route()">${item.name}</a>
                     </li>
                 `;
-                routes[`/words-learning/word-set/${item.id}`] = '/words-learning/pages/word-set.html';
-                routes[`/words-learning/word-set/${item.id}/training`] = '/words-learning/pages/training.html';
+                routes[`/words-learning/word-sets/${item.id}`] = '/words-learning/pages/word-set.html';
+                routes[`/words-learning/word-sets/${item.id}/training`] = '/words-learning/pages/training.html';
             });
 
             wordSetsMenu.innerHTML = wordSetListHtml;
@@ -107,11 +107,10 @@ function addDynamicContentToTrainingPage(id) {
 
 
 
-            trainAgain.href = `/words-learning/word-set/${id}/training`;
+            trainAgain.href = `/words-learning/word-sets/${id}/training`;
 
             let words = currentWordSet.words;
             words = words.sort((a, b) => 0.5 - Math.random());
-            console.log(words);
             let currentIndex = 0;
 
             let word = words[0];
@@ -215,7 +214,7 @@ function addDynamicContentToWordSetPage(id) {
     const wordSetTitle = document.querySelector('.word-set-title'),
           words = document.querySelector('.words'),
           training = document.querySelector('.training-button');
-
+    
     (0,_db__WEBPACK_IMPORTED_MODULE_0__.getWordSet)(id)
         .then(data => {
             let currentWordSet = data;
@@ -304,6 +303,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_homePage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/homePage */ "./js/modules/homePage.js");
 /* harmony import */ var _modules_wordSetPage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/wordSetPage */ "./js/modules/wordSetPage.js");
 /* harmony import */ var _modules_trainingPage__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/trainingPage */ "./js/modules/trainingPage.js");
+/* harmony import */ var _modules_db__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/db */ "./js/modules/db.js");
+
 
 
 
@@ -311,14 +312,15 @@ __webpack_require__.r(__webpack_exports__);
 
 const routes = {
     404: "/words-learning/pages/404.html",
-    "/words-learning/": "/words-learning/pages/index.html"
+    "/words-learning/": "/words-learning/pages/index.html",
+    "/words-learning/lorem/": "/words-learning/pages/lorem.html"
 };
 
 const route = (event) => {
     event = event || window.event;
     event.preventDefault();
     window.history.pushState({}, "", event.target.href);
-    handleLocation();
+    updateDynamicRoutesAndHandleLocation();
 };
 
 const handleLocation = async () => {
@@ -327,24 +329,50 @@ const handleLocation = async () => {
     const html = await axios.get(route).then((data) => data.data);
     document.getElementById("main-page").innerHTML = html;
 
+    if(route === routes[404]) {
+        return;
+    }
+    
     if (path === "/words-learning/") {
         (0,_modules_homePage__WEBPACK_IMPORTED_MODULE_0__["default"])(routes);
     }
 
-    if (path.replace(/\d/g, '') === '/words-learning/word-set/') {
+    if (path.replace(/\d/g, '') === '/words-learning/word-sets/') {
         (0,_modules_wordSetPage__WEBPACK_IMPORTED_MODULE_1__["default"])(+path.replace(/\D/g, ''));
     }
 
-    if (path.replace(/\d/g, '') === '/words-learning/word-set//training') {
+    if (path.replace(/\d/g, '') === '/words-learning/word-sets//training') {
         (0,_modules_trainingPage__WEBPACK_IMPORTED_MODULE_2__["default"])(+path.replace(/\D/g, ''));
     }
 };
 
-window.onpopstate = handleLocation;
+const updateDynamicRoutesAndHandleLocation = () => {
+    
+    for(const key in routes) {
+         delete routes[key];
+    }
+
+    routes[404] = "/words-learning/pages/404.html";
+    routes["/words-learning/"] =  "/words-learning/pages/index.html";
+    routes["/words-learning/lorem/"]= "/words-learning/pages/lorem.html";
+
+    (0,_modules_db__WEBPACK_IMPORTED_MODULE_3__.getWordSets)()
+        .then(wordSets => {
+            wordSets.forEach(item => {
+                routes[`/words-learning/word-sets/${item.id}`] = '/words-learning/pages/word-set.html';
+                routes[`/words-learning/word-sets/${item.id}/training`] = '/words-learning/pages/training.html';
+            });
+            
+        })
+        .then(() => {
+            handleLocation();
+        });
+};
+
+window.onpopstate = updateDynamicRoutesAndHandleLocation;
 window.route = route;
 
-
-handleLocation();
+updateDynamicRoutesAndHandleLocation();
 })();
 
 /******/ })()
