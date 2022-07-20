@@ -2,7 +2,14 @@
 import addDynamicContentToHomePage from './modules/homePage';
 import addDynamicContentToWordSetPage from './modules/wordSetPage';
 import addDynamicContentToTrainingPage from './modules/trainingPage';
-import {getWordSets} from './modules/db';
+import {
+    getWordSets
+} from './modules/db';
+
+window.localStorage.setItem('language', 'POLISH');
+const languageElement = document.querySelector('.language');
+languageElement.textContent = `Language: ${window.localStorage.getItem('language')}`;
+
 
 const routes = {
     404: "/words-learning/pages/404.html",
@@ -23,10 +30,10 @@ const handleLocation = async () => {
     const html = await axios.get(route).then((data) => data.data);
     document.getElementById("main-page").innerHTML = html;
 
-    if(route === routes[404]) {
+    if (route === routes[404]) {
         return;
     }
-    
+
     if (path === "/words-learning/") {
         addDynamicContentToHomePage(routes);
     }
@@ -41,22 +48,24 @@ const handleLocation = async () => {
 };
 
 const updateDynamicRoutesAndHandleLocation = () => {
-    
-    for(const key in routes) {
-         delete routes[key];
+
+    for (const key in routes) {
+        delete routes[key];
     }
 
     routes[404] = "/words-learning/pages/404.html";
-    routes["/words-learning/"] =  "/words-learning/pages/index.html";
-    routes["/words-learning/lorem/"]= "/words-learning/pages/lorem.html";
+    routes["/words-learning/"] = "/words-learning/pages/index.html";
+    routes["/words-learning/lorem/"] = "/words-learning/pages/lorem.html";
 
     getWordSets()
         .then(wordSets => {
-            wordSets.forEach(item => {
-                routes[`/words-learning/word-sets/${item.id}`] = '/words-learning/pages/word-set.html';
-                routes[`/words-learning/word-sets/${item.id}/training`] = '/words-learning/pages/training.html';
-            });
-            
+            wordSets
+                .filter(wordSet => wordSet.language === window.localStorage.getItem('language'))
+                .forEach(item => {
+                    routes[`/words-learning/word-sets/${item.id}`] = '/words-learning/pages/word-set.html';
+                    routes[`/words-learning/word-sets/${item.id}/training`] = '/words-learning/pages/training.html';
+                });
+
         })
         .then(() => {
             handleLocation();

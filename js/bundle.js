@@ -10,6 +10,9 @@
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "addWordSet": () => (/* binding */ addWordSet),
+/* harmony export */   "deleteWordSet": () => (/* binding */ deleteWordSet),
+/* harmony export */   "editWordSet": () => (/* binding */ editWordSet),
 /* harmony export */   "getWordSet": () => (/* binding */ getWordSet),
 /* harmony export */   "getWordSets": () => (/* binding */ getWordSets)
 /* harmony export */ });
@@ -22,6 +25,21 @@ function getWordSet(id) {
     return axios.get(`http://localhost:8080/word-sets/${id}/`)
         .then(data => data.data);
 }
+
+function addWordSet(wordSet) {
+    return axios.post('http://localhost:8080/word-sets', wordSet);
+}
+
+function editWordSet(id, wordSet) {
+    return axios.put(`http://localhost:8080/word-sets/${id}`, wordSet);
+}
+
+function deleteWordSet(id) {
+    return axios.delete(`http://localhost:8080/word-sets/${id}`);
+}
+
+
+
 
 
 
@@ -39,28 +57,148 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _db__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./db */ "./js/modules/db.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./js/modules/utils.js");
+
+
 
 
 function addDynamicContentToHomePage(routes) {
-    (0,_db__WEBPACK_IMPORTED_MODULE_0__.getWordSets)()
-        .then(data => {
-            let wordSets = data;
 
-            const wordSetsMenu = document.querySelector('.word-set-list');
-            let wordSetListHtml = '';
+    const form = document.querySelector('#add-word-set-form'),
+        modal = document.querySelector('#add-word-set-modal'),
+        nameInput = document.querySelector('#modal__name'),
+        wordSetsMenu = document.querySelector('.word-set-list'),
+        addWordSetElement = document.querySelector('.add-word-set');
 
-            wordSets.forEach(item => {
-                wordSetListHtml += `
-                    <li>   
+    let currentWordSetIndex = -1;
+
+    renderWordSetList(routes);
+
+    addEventListenerToAddWordSetElement();
+    bindCloseModalToEvents();
+
+    bindEventListenerToForm();
+
+    function bindEventListenerToForm() {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if (nameInput.value && nameInput.value != '') {
+                const formData = new FormData(form);
+                const object = Object.fromEntries(formData.entries());
+                object.language = window.localStorage.getItem('language');
+                if (currentWordSetIndex < 0) {
+                    (0,_db__WEBPACK_IMPORTED_MODULE_0__.addWordSet)(object)
+                        .then(data => {
+                            renderWordSetList(routes);
+                        })
+                        .finally(() => {
+                            closeModal(modal);
+                        });
+                } else {
+                    (0,_db__WEBPACK_IMPORTED_MODULE_0__.editWordSet)(currentWordSetIndex, object)
+                        .then(data => {
+                            console.log(data.data);
+                            renderWordSetList(routes);
+                        })
+                        .finally(() => {
+                            closeModal(modal);
+                        });
+                }
+            } else {
+                nameInput.style.border = '3px solid red';
+            }
+        });
+    }
+
+    function addEventListenerToEditWordSetElement(wordSet, editWordSetElement) {
+        editWordSetElement.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal(modal);
+            nameInput.value = wordSet.name;
+            currentWordSetIndex = wordSet.id;
+        });
+    }
+
+    function renderWordSetList() {
+        (0,_db__WEBPACK_IMPORTED_MODULE_0__.getWordSets)()
+            .then(data => {
+                let wordSets = data;
+                let wordSetListHtml = '';
+                wordSets = wordSets.filter(wordSet => wordSet.language === window.localStorage.getItem('language'));
+                wordSets.forEach(item => {
+                    wordSetListHtml += `
+                    <li id="word-set-${item.id}">   
                         <a href="/words-learning/word-sets/${item.id}" onclick="route()">${item.name}</a>
+                        <a href="" id="edit-word-set-${item.id}">Edit</a> 
+                        <a href="" id="delete-word-set-${item.id}">Delete</a>
                     </li>
                 `;
-                routes[`/words-learning/word-sets/${item.id}`] = '/words-learning/pages/word-set.html';
-                routes[`/words-learning/word-sets/${item.id}/training`] = '/words-learning/pages/training.html';
-            });
 
-            wordSetsMenu.innerHTML = wordSetListHtml;
+                    routes[`/words-learning/word-sets/${item.id}`] = '/words-learning/pages/word-set.html';
+                    routes[`/words-learning/word-sets/${item.id}/training`] = '/words-learning/pages/training.html';
+                });
+
+                wordSetsMenu.innerHTML = wordSetListHtml;
+
+                wordSets.forEach(item => {
+                    const editWordSet = document.querySelector(`#edit-word-set-${item.id}`),
+                        deleteWordSet = document.querySelector(`#delete-word-set-${item.id}`);
+
+                    addEventListenerToDeletWordSetElement(item, deleteWordSet);
+                    addEventListenerToEditWordSetElement(item, editWordSet);
+                });
+            });
+    }
+
+    function openModal() {
+        (0,_utils__WEBPACK_IMPORTED_MODULE_1__.show)(modal);
+        nameInput.focus();
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(modal);
+        document.body.style.overflow = '';
+        const form = document.querySelector('#add-word-set-form'),
+            nameInput = modal.querySelector('#modal__name');
+        nameInput.style.border = '';
+        currentWordSetIndex = -1;
+        form.reset();
+    }
+
+    function addEventListenerToAddWordSetElement() {
+        addWordSetElement.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal(modal);
         });
+    }
+
+    function bindCloseModalToEvents() {
+
+        modal.addEventListener('click', e => {
+            if (e.target === modal || e.target.getAttribute('data-close') == '') {
+                closeModal(modal);
+            }
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.code === 'Escape' && modal.classList.contains('show')) {
+                closeModal(modal);
+            }
+        });
+    }
+
+    function addEventListenerToDeletWordSetElement(wordSet, deleteWordSetElement) {
+        deleteWordSetElement.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm(`Are you sure you want to delete word set "${wordSet.name}"`)) {
+                const deletedWordSet = document.querySelector(`#word-set-${wordSet.id}`);
+                deletedWordSet.remove();
+                (0,_db__WEBPACK_IMPORTED_MODULE_0__.deleteWordSet)(wordSet.id);
+            }
+        });
+    }
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (addDynamicContentToHomePage);
@@ -310,6 +448,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+window.localStorage.setItem('language', 'POLISH');
+const languageElement = document.querySelector('.language');
+languageElement.textContent = `Language: ${window.localStorage.getItem('language')}`;
+
+
 const routes = {
     404: "/words-learning/pages/404.html",
     "/words-learning/": "/words-learning/pages/index.html",
@@ -329,10 +472,10 @@ const handleLocation = async () => {
     const html = await axios.get(route).then((data) => data.data);
     document.getElementById("main-page").innerHTML = html;
 
-    if(route === routes[404]) {
+    if (route === routes[404]) {
         return;
     }
-    
+
     if (path === "/words-learning/") {
         (0,_modules_homePage__WEBPACK_IMPORTED_MODULE_0__["default"])(routes);
     }
@@ -347,22 +490,24 @@ const handleLocation = async () => {
 };
 
 const updateDynamicRoutesAndHandleLocation = () => {
-    
-    for(const key in routes) {
-         delete routes[key];
+
+    for (const key in routes) {
+        delete routes[key];
     }
 
     routes[404] = "/words-learning/pages/404.html";
-    routes["/words-learning/"] =  "/words-learning/pages/index.html";
-    routes["/words-learning/lorem/"]= "/words-learning/pages/lorem.html";
+    routes["/words-learning/"] = "/words-learning/pages/index.html";
+    routes["/words-learning/lorem/"] = "/words-learning/pages/lorem.html";
 
     (0,_modules_db__WEBPACK_IMPORTED_MODULE_3__.getWordSets)()
         .then(wordSets => {
-            wordSets.forEach(item => {
-                routes[`/words-learning/word-sets/${item.id}`] = '/words-learning/pages/word-set.html';
-                routes[`/words-learning/word-sets/${item.id}/training`] = '/words-learning/pages/training.html';
-            });
-            
+            wordSets
+                .filter(wordSet => wordSet.language === window.localStorage.getItem('language'))
+                .forEach(item => {
+                    routes[`/words-learning/word-sets/${item.id}`] = '/words-learning/pages/word-set.html';
+                    routes[`/words-learning/word-sets/${item.id}/training`] = '/words-learning/pages/training.html';
+                });
+
         })
         .then(() => {
             handleLocation();

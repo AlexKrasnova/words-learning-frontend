@@ -19,3 +19,54 @@ ul {
 .result-wrong {
     color: red;
 }
+
+.language {
+    text-color: grey;
+}
+
+/* .modal__close{
+    position:absolute;
+    top:8px;right:14px;
+    font-size:30px;
+    color:#000;opacity:.5;
+    font-weight:700;
+    border:none;
+    background-color:transparent;
+    cursor:pointer
+} */
+
+.modal{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background-color: rgba(0,0,0,.5);
+    width: 100%;
+    height: 100%;
+}
+
+.modal__content {
+    border: 1px solid black; 
+    position: absolute;
+    overflow:hidden;
+    padding: 10px;
+    background-color: white;
+}
+
+.add-word-set {
+    margin-top: 10px;
+}
+
+.modal__dialog {
+    max-width: 500px;
+    margin: 40px auto;
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor:pointer;
+    font-size:30px;
+    color:#000;opacity:.5;
+    font-weight:700;
+}

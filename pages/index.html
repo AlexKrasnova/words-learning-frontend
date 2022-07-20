@@ -1,9 +1,40 @@
 <div class="content">
     <h1>Word sets</h1>
     <ul class="word-set-list">
-        <li><a>Набор 1</a></li>
-        <li><a>Набор 2</a></li>
-        <li><a>Набор 3</a></li>
-        <li><a>Набор 4</a></li>
+        <!-- <li id="word-set-1">   
+            <a href="/words-learning/word-sets/1" onclick="route()">My set</a>
+            <a href="" id="edit-word-set-1">Edit</a> 
+            <a href="" id="delete-word-set-1">Delete</a>
+        </li>
+        <li id="word-set-2">   
+            <a href="/words-learning/word-sets/2" onclick="route()">My set 2</a>
+            <a href="" id="edit-word-set-2">Edit</a> 
+            <a href="" id="delete-word-set-2">Delete</a>
+        </li> -->
     </ul>
+    <div class="add-word-set"><a href="">Add word set</a></div>
 </div>
+
+<div id="add-word-set-modal" class="modal hide">
+    <div class="modal__dialog">
+    <div class="modal__content">
+        <form data-post id="add-word-set-form" action="#">
+            <div data-close class="modal-close">&times;</div>
+            <h3>Add/edit word set</h3>
+            <label for="modal__name">Enter word set name: </label>
+            <input id="modal__name" name="name" type="text">
+            <div><button id="save-button">Save</button></div>
+            <div><button id="update-button" class="hide">Save</button></div>
+        </form>
+    </div>
+    </div>
+</div>
+
+<!-- <div id="dialog-modal" class="modal hide">
+    <div class="modal__dialog">
+    <div class="modal__content">
+        <div data-close class="modal-close">&times;</div>
+        <div><button class="yes-button">Yes</button></div>
+    </div>
+    </div>
+</div> -->
