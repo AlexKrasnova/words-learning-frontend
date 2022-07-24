@@ -5,9 +5,7 @@ import {
     deleteWordSet
 } from './db';
 import {
-    hide
-} from './utils';
-import {
+    hide,
     show
 } from './utils';
 
@@ -17,13 +15,13 @@ function addDynamicContentToHomePage(routes) {
         modal = document.querySelector('#add-word-set-modal'),
         nameInput = document.querySelector('#modal__name'),
         wordSetsMenu = document.querySelector('.word-set-list'),
-        addWordSetElement = document.querySelector('.add-word-set');
+        addWordSetElements = document.querySelectorAll('.add-word-set');
 
     let currentWordSetIndex = -1;
 
     renderWordSetList(routes);
 
-    addEventListenerToAddWordSetElement();
+    addEventListenerToAddWordSetElements();
     bindCloseModalToEvents();
 
     bindEventListenerToForm();
@@ -32,30 +30,26 @@ function addDynamicContentToHomePage(routes) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            if (nameInput.value && nameInput.value != '') {
-                const formData = new FormData(form);
-                const object = Object.fromEntries(formData.entries());
-                object.language = window.localStorage.getItem('language');
-                if (currentWordSetIndex < 0) {
-                    addWordSet(object)
-                        .then(data => {
-                            renderWordSetList(routes);
-                        })
-                        .finally(() => {
-                            closeModal(modal);
-                        });
-                } else {
-                    editWordSet(currentWordSetIndex, object)
-                        .then(data => {
-                            console.log(data.data);
-                            renderWordSetList(routes);
-                        })
-                        .finally(() => {
-                            closeModal(modal);
-                        });
-                }
+            const formData = new FormData(form);
+            const object = Object.fromEntries(formData.entries());
+            object.language = window.localStorage.getItem('language');
+            if (currentWordSetIndex < 0) {
+                addWordSet(object)
+                    .then(data => {
+                        renderWordSetList();
+                    })
+                    .finally(() => {
+                        closeModal(modal);
+                    });
             } else {
-                nameInput.style.border = '3px solid red';
+                editWordSet(currentWordSetIndex, object)
+                    .then(data => {
+                        console.log(data.data);
+                        renderWordSetList();
+                    })
+                    .finally(() => {
+                        closeModal(modal);
+                    });
             }
         });
     }
@@ -78,9 +72,9 @@ function addDynamicContentToHomePage(routes) {
                 wordSets.forEach(item => {
                     wordSetListHtml += `
                     <li id="word-set-${item.id}">   
-                        <a href="/words-learning/word-sets/${item.id}" onclick="route()">${item.name}</a>
-                        <a href="" id="edit-word-set-${item.id}">Edit</a> 
-                        <a href="" id="delete-word-set-${item.id}">Delete</a>
+                        <a class="word-set-name-list" href="/words-learning/word-sets/${item.id}" onclick="route()">${item.name}</a>
+                        <a href="#" id="edit-word-set-${item.id}">Edit</a> 
+                        <a href="#" id="delete-word-set-${item.id}">Delete</a>
                     </li>
                 `;
 
@@ -109,18 +103,17 @@ function addDynamicContentToHomePage(routes) {
     function closeModal() {
         hide(modal);
         document.body.style.overflow = '';
-        const form = document.querySelector('#add-word-set-form'),
-            nameInput = modal.querySelector('#modal__name');
-        nameInput.style.border = '';
         currentWordSetIndex = -1;
         form.reset();
     }
 
-    function addEventListenerToAddWordSetElement() {
-        addWordSetElement.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal(modal);
-        });
+    function addEventListenerToAddWordSetElements() {
+        addWordSetElements.forEach(addWordSetElement => {
+            addWordSetElement.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal(modal);
+            });
+        });   
     }
 
     function bindCloseModalToEvents() {

@@ -1,13 +1,71 @@
 <div class="content">
     <h1 class="word-set-title">Набор 1</h1>
+    <div class="training-button"><a href="/training" onclick="route()">Training</a></div>
+    <div class="add-word"><a href="#">Add word</a></div>
     <h2>Words</h2>
+    <div class="word">
+        <div class="word-element number">Number</div>
+        <div class="word-element">Word</div>
+        <div class="word-element">Translation</div>
+        <div class="word-element">Examples</div>
+        <div class="word-element">Comment</div>
+        <div class="word-element"></div>
+        <div class="word-element"></div>
+    </div>
     <ul class="words">
-        <li class="word-set__word">infatuation</li>
-        <li class="word-set__word">incantation</li>
-        <li class="word-set__word">approximation</li>
-        <li class="word-set__word">magazine</li>
-        <li class="word-set__word">translation</li>
-        <li class="word-set__word">hero</li>
+        <li class="word-set__word">
+            <div class="word">
+                <div class="word-element number">1</div>
+                <div class="word-element">mother</div>
+                <div class="word-element">мать</div>
+                <div class="word-element">Mother eats apple.</div>
+                <div class="word-element">Comment</div>
+                <div class="word-element"><a href="#">Edit</a></div>
+                <div class="word-element"><a href="#">Delete</a></div>
+            </div>
+        </li>
     </ul>
     <div class="training-button"><a href="/training" onclick="route()">Training</a></div>
+    <div class="add-word"><a href="#">Add word</a></div>
+</div>
+
+<div id="add-word-modal" class="modal hide">
+    <div class="modal__dialog">
+    <div class="modal__content">
+        <form data-post id="add-word-form" action="#">
+            <div data-close class="modal-close">&times;</div>
+            <h3>Add/edit word</h3>
+            <div class="modal-form-element">
+                <label for="word-name-input">Word: </label>
+                <input required id="word-name-input" name="name" type="text">
+            </div>
+            <div class="modal-form-element">
+                <label for="word-translation-input">Translation: </label>
+                <input required id="word-translation-input" name="translation" type="text">
+            </div>
+            <div class="modal-form-element">__________________________________________________</div>
+            <div id="word-examples" class="modal-form-element">
+                <div>Examples: </div>
+                <div id="word-examples-inputs-wrapper">
+                    <div>
+                        <input class="word-example-input" name="example1" type="text">
+                        <a id="delete-example-1" href="#">Delete</a>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="modal-form-element">
+                <a id="add-example" href="#">Add example</a>
+            </div>
+            <div class="modal-form-element">__________________________________________________</div>
+            <div class="modal-form-element">
+                <label for="word-comment-input">Comment: </label>
+                <input id="word-comment-input" name="comment" type="text">
+            </div>
+            <div class="modal-form-element">
+                <button id="save-button">Save</button>
+            </div>
+        </form>
+    </div>
+    </div>
 </div>

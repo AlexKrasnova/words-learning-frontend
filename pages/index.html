@@ -1,5 +1,6 @@
 <div class="content">
     <h1>Word sets</h1>
+    <div class="add-word-set"><a href="#">Add word set</a></div>
     <ul class="word-set-list">
         <!-- <li id="word-set-1">   
             <a href="/words-learning/word-sets/1" onclick="route()">My set</a>
@@ -12,7 +13,7 @@
             <a href="" id="delete-word-set-2">Delete</a>
         </li> -->
     </ul>
-    <div class="add-word-set"><a href="">Add word set</a></div>
+    <div class="add-word-set"><a href="#">Add word set</a></div>
 </div>
 
 <div id="add-word-set-modal" class="modal hide">
@@ -21,10 +22,13 @@
         <form data-post id="add-word-set-form" action="#">
             <div data-close class="modal-close">&times;</div>
             <h3>Add/edit word set</h3>
-            <label for="modal__name">Enter word set name: </label>
-            <input id="modal__name" name="name" type="text">
-            <div><button id="save-button">Save</button></div>
-            <div><button id="update-button" class="hide">Save</button></div>
+            <div class="modal-form-element">
+                <label for="modal__name">Enter word set name: </label>
+                <input required id="modal__name" name="name" type="text">
+            </div>
+            <div class="modal-form-element">
+                <button id="save-button">Save</button>
+            </div>
         </form>
     </div>
     </div>

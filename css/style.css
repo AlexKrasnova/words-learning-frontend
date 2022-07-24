@@ -21,7 +21,35 @@ ul {
 }
 
 .language {
-    text-color: grey;
+    color: grey;   
+}
+
+.modal-form-element {
+    padding-bottom: 10px; 
+}
+
+.word {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.word > div {
+    margin: 10px;
+    width: 200px;
+}
+
+.word > div.number {
+    width: 50px;
+}
+
+.add-word-set {
+    margin: 10px 0;
+}
+
+.word-set-name-list {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;   
 }
 
 /* .modal__close{

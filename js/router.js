@@ -6,7 +6,7 @@ import {
     getWordSets
 } from './modules/db';
 
-window.localStorage.setItem('language', 'POLISH');
+window.localStorage.setItem('language', 'ENGLISH');
 const languageElement = document.querySelector('.language');
 languageElement.textContent = `Language: ${window.localStorage.getItem('language')}`;
 
