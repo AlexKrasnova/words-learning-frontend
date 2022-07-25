@@ -676,9 +676,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-window.localStorage.setItem('language', 'ENGLISH');
-const languageElement = document.querySelector('.language');
-languageElement.textContent = `Language: ${window.localStorage.getItem('language')}`;
+const languageSelect = document.querySelector('#languages');
+const language =  window.localStorage.getItem('language');
+languageSelect.value = language ? language : 'ENGLISH';
+languageSelect.addEventListener('change', () => {
+    window.localStorage.setItem('language', languageSelect.value);
+    window.location.reload();
+});
 
 
 const routes = {
