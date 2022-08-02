@@ -26,7 +26,7 @@ function addDynamicContentToTrainingPage(id) {
 
 
 
-            trainAgain.href = `/words-learning/word-sets/${id}/training`;
+            trainAgain.href = `/word-sets/${id}/training`;
 
             let words = currentWordSet.words;
             words = words.sort((a, b) => 0.5 - Math.random());

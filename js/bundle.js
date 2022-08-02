@@ -148,14 +148,14 @@ function addDynamicContentToHomePage(routes) {
                 wordSets.forEach(item => {
                     wordSetListHtml += `
                     <li id="word-set-${item.id}">   
-                        <a class="word-set-name-list" href="/words-learning/word-sets/${item.id}" onclick="route()">${item.name}</a>
+                        <a class="word-set-name-list" href="/word-sets/${item.id}" onclick="route()">${item.name}</a>
                         <a href="#" id="edit-word-set-${item.id}">Edit</a> 
                         <a href="#" id="delete-word-set-${item.id}">Delete</a>
                     </li>
                 `;
 
-                    routes[`/words-learning/word-sets/${item.id}`] = '/words-learning/pages/word-set.html';
-                    routes[`/words-learning/word-sets/${item.id}/training`] = '/words-learning/pages/training.html';
+                    routes[`/word-sets/${item.id}`] = '/pages/word-set.html';
+                    routes[`/word-sets/${item.id}/training`] = '/pages/training.html';
                 });
 
                 wordSetsMenu.innerHTML = wordSetListHtml;
@@ -263,7 +263,7 @@ function addDynamicContentToTrainingPage(id) {
 
 
 
-            trainAgain.href = `/words-learning/word-sets/${id}/training`;
+            trainAgain.href = `/word-sets/${id}/training`;
 
             let words = currentWordSet.words;
             words = words.sort((a, b) => 0.5 - Math.random());
@@ -678,7 +678,13 @@ __webpack_require__.r(__webpack_exports__);
 
 const languageSelect = document.querySelector('#languages');
 const language =  window.localStorage.getItem('language');
-languageSelect.value = language ? language : 'ENGLISH';
+
+if(language) {
+    languageSelect.value = language;
+} else {
+    languageSelect.value = 'POLISH';
+    window.localStorage.setItem('language', 'POLISH');
+}
 languageSelect.addEventListener('change', () => {
     window.localStorage.setItem('language', languageSelect.value);
     window.location.reload();
@@ -686,9 +692,8 @@ languageSelect.addEventListener('change', () => {
 
 
 const routes = {
-    404: "/words-learning/pages/404.html",
-    "/words-learning/": "/words-learning/pages/index.html",
-    "/words-learning/lorem/": "/words-learning/pages/lorem.html"
+    404: "/pages/404.html",
+    "/": "/pages/index.html"
 };
 
 const route = (event) => {
@@ -708,15 +713,15 @@ const handleLocation = async () => {
         return;
     }
 
-    if (path === "/words-learning/") {
+    if (path === "/") {
         (0,_modules_homePage__WEBPACK_IMPORTED_MODULE_0__["default"])(routes);
     }
 
-    if (path.replace(/\d/g, '') === '/words-learning/word-sets/') {
+    if (path.replace(/\d/g, '') === '/word-sets/') {
         (0,_modules_wordSetPage__WEBPACK_IMPORTED_MODULE_1__["default"])(+path.replace(/\D/g, ''));
     }
 
-    if (path.replace(/\d/g, '') === '/words-learning/word-sets//training') {
+    if (path.replace(/\d/g, '') === '/word-sets//training') {
         (0,_modules_trainingPage__WEBPACK_IMPORTED_MODULE_2__["default"])(+path.replace(/\D/g, ''));
     }
 };
@@ -727,17 +732,16 @@ const updateDynamicRoutesAndHandleLocation = () => {
         delete routes[key];
     }
 
-    routes[404] = "/words-learning/pages/404.html";
-    routes["/words-learning/"] = "/words-learning/pages/index.html";
-    routes["/words-learning/lorem/"] = "/words-learning/pages/lorem.html";
+    routes[404] = "/pages/404.html";
+    routes["/"] = "/pages/index.html";
 
     (0,_modules_db__WEBPACK_IMPORTED_MODULE_3__.getWordSets)()
         .then(wordSets => {
             wordSets
                 .filter(wordSet => wordSet.language === window.localStorage.getItem('language'))
                 .forEach(item => {
-                    routes[`/words-learning/word-sets/${item.id}`] = '/words-learning/pages/word-set.html';
-                    routes[`/words-learning/word-sets/${item.id}/training`] = '/words-learning/pages/training.html';
+                    routes[`/word-sets/${item.id}`] = '/pages/word-set.html';
+                    routes[`/word-sets/${item.id}/training`] = '/pages/training.html';
                 });
 
         })

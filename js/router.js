@@ -8,7 +8,13 @@ import {
 
 const languageSelect = document.querySelector('#languages');
 const language =  window.localStorage.getItem('language');
-languageSelect.value = language ? language : 'ENGLISH';
+
+if(language) {
+    languageSelect.value = language;
+} else {
+    languageSelect.value = 'POLISH';
+    window.localStorage.setItem('language', 'POLISH');
+}
 languageSelect.addEventListener('change', () => {
     window.localStorage.setItem('language', languageSelect.value);
     window.location.reload();
@@ -16,9 +22,8 @@ languageSelect.addEventListener('change', () => {
 
 
 const routes = {
-    404: "/words-learning/pages/404.html",
-    "/words-learning/": "/words-learning/pages/index.html",
-    "/words-learning/lorem/": "/words-learning/pages/lorem.html"
+    404: "/pages/404.html",
+    "/": "/pages/index.html"
 };
 
 const route = (event) => {
@@ -38,15 +43,15 @@ const handleLocation = async () => {
         return;
     }
 
-    if (path === "/words-learning/") {
+    if (path === "/") {
         addDynamicContentToHomePage(routes);
     }
 
-    if (path.replace(/\d/g, '') === '/words-learning/word-sets/') {
+    if (path.replace(/\d/g, '') === '/word-sets/') {
         addDynamicContentToWordSetPage(+path.replace(/\D/g, ''));
     }
 
-    if (path.replace(/\d/g, '') === '/words-learning/word-sets//training') {
+    if (path.replace(/\d/g, '') === '/word-sets//training') {
         addDynamicContentToTrainingPage(+path.replace(/\D/g, ''));
     }
 };
@@ -57,17 +62,16 @@ const updateDynamicRoutesAndHandleLocation = () => {
         delete routes[key];
     }
 
-    routes[404] = "/words-learning/pages/404.html";
-    routes["/words-learning/"] = "/words-learning/pages/index.html";
-    routes["/words-learning/lorem/"] = "/words-learning/pages/lorem.html";
+    routes[404] = "/pages/404.html";
+    routes["/"] = "/pages/index.html";
 
     getWordSets()
         .then(wordSets => {
             wordSets
                 .filter(wordSet => wordSet.language === window.localStorage.getItem('language'))
                 .forEach(item => {
-                    routes[`/words-learning/word-sets/${item.id}`] = '/words-learning/pages/word-set.html';
-                    routes[`/words-learning/word-sets/${item.id}/training`] = '/words-learning/pages/training.html';
+                    routes[`/word-sets/${item.id}`] = '/pages/word-set.html';
+                    routes[`/word-sets/${item.id}/training`] = '/pages/training.html';
                 });
 
         })

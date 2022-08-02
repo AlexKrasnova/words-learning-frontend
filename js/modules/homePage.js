@@ -72,14 +72,14 @@ function addDynamicContentToHomePage(routes) {
                 wordSets.forEach(item => {
                     wordSetListHtml += `
                     <li id="word-set-${item.id}">   
-                        <a class="word-set-name-list" href="/words-learning/word-sets/${item.id}" onclick="route()">${item.name}</a>
+                        <a class="word-set-name-list" href="/word-sets/${item.id}" onclick="route()">${item.name}</a>
                         <a href="#" id="edit-word-set-${item.id}">Edit</a> 
                         <a href="#" id="delete-word-set-${item.id}">Delete</a>
                     </li>
                 `;
 
-                    routes[`/words-learning/word-sets/${item.id}`] = '/words-learning/pages/word-set.html';
-                    routes[`/words-learning/word-sets/${item.id}/training`] = '/words-learning/pages/training.html';
+                    routes[`/word-sets/${item.id}`] = '/pages/word-set.html';
+                    routes[`/word-sets/${item.id}/training`] = '/pages/training.html';
                 });
 
                 wordSetsMenu.innerHTML = wordSetListHtml;
