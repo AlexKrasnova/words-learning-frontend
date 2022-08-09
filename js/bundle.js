@@ -17361,7 +17361,8 @@ const route = (event) => {
     event = event || window.event;
     event.preventDefault();
     window.history.pushState({}, "", event.target.href);
-    updateDynamicRoutesAndHandleLocation();
+    handleLocation();
+    //updateDynamicRoutesAndHandleLocation();
 };
 
 const handleLocation = async () => {
@@ -17409,12 +17410,14 @@ const updateDynamicRoutesAndHandleLocation = () => {
         .then(() => {
             handleLocation();
         });
+        
 };
 
-window.onpopstate = updateDynamicRoutesAndHandleLocation;
+window.onpopstate = handleLocation;
 window.route = route;
 
-updateDynamicRoutesAndHandleLocation();
+handleLocation();
+//updateDynamicRoutesAndHandleLocation();
 })();
 
 /******/ })()
