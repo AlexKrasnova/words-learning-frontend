@@ -3,15 +3,20 @@
 let path = require('path');
 
 module.exports = {
-  mode: 'development',
-  entry: './js/router.js',
-  output: {
-    filename: 'bundle.js',
-    path: __dirname + '/js'
-  },
-  watch: true,
+    mode: 'development',
+    entry: './js/router.js',
+    output: {
+        filename: 'bundle.js',
+        path: __dirname + '/js'
+    },
+    watch: true,
 
-  devtool: "source-map",
+    devtool: "source-map",
 
-  module: {}
+    module: {
+        rules: [{
+            test: /\.(css)$/,
+            use: ["style-loader", "css-loader"],
+        }],
+    }
 };

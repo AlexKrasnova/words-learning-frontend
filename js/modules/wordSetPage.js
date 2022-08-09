@@ -14,7 +14,7 @@ import {
 function addDynamicContentToWordSetPage(id) {
     const wordSetTitle = document.querySelector('.word-set-title'),
         wordsElement = document.querySelector('.words'),
-        training = document.querySelector('.training-button'),
+        trainings = document.querySelectorAll('.training-button'),
         modal = document.querySelector('.modal'),
         addWordElements = document.querySelectorAll('.add-word'),
         addExampleElement = document.querySelector('#add-example'),
@@ -23,7 +23,7 @@ function addDynamicContentToWordSetPage(id) {
         commentInput = document.querySelector('#word-comment-input'),
         exampleInputsWrapper = document.querySelector('#word-examples-inputs-wrapper'),
         form = document.querySelector('#add-word-form');
-        
+
     let currentWordIndex = -1,
         currentWordSet,
         numberOfExampleInputs = 1;
@@ -77,9 +77,13 @@ function addDynamicContentToWordSetPage(id) {
                     addEventListenerToEditWordElement(item, editWord);
                 });
 
-                training.innerHTML = `
-                <a href="${id}/training" onclick="route()">Training</a></div>
-            `;
+                trainings.forEach(training => {
+                    training.innerHTML = `<div>
+                        <a href="${id}/training" onclick="route()">Training</a></div>
+                `;
+                });
+
+
             });
     }
 
@@ -94,16 +98,16 @@ function addDynamicContentToWordSetPage(id) {
             wordToAddOrEdit.translation = object.translation;
             wordToAddOrEdit.comment = object.comment;
             wordToAddOrEdit.language = window.localStorage.getItem('language');
-            wordToAddOrEdit.examples = []; 
+            wordToAddOrEdit.examples = [];
             for (let key in object) {
-                if(key.replace(/\d/g, '') === 'example' && object[key] != '') {
+                if (key.replace(/\d/g, '') === 'example' && object[key] != '') {
                     wordToAddOrEdit.examples.push(object[key]);
                 }
             }
             if (wordToAddOrEdit.comment === '') {
                 wordToAddOrEdit.comment = null;
             }
-            
+
             if (currentWordIndex < 0) {
                 addNewWordToSet(currentWordSet.id, wordToAddOrEdit)
                     .then(data => {
@@ -124,12 +128,12 @@ function addDynamicContentToWordSetPage(id) {
             }
         });
     }
-    
+
     function addEventListenerToAddExampleElement() {
         addExampleElement.addEventListener('click', (e) => {
             e.preventDefault();
             addExampleInput();
-        }); 
+        });
     }
 
     function addExampleInput() {
@@ -145,7 +149,7 @@ function addDynamicContentToWordSetPage(id) {
             e.preventDefault();
             deleteExample.parentElement.remove();
         });
-        
+
     }
 
     function addEventListenerToAddWordElements() {
@@ -184,8 +188,8 @@ function addDynamicContentToWordSetPage(id) {
 
             if (word.examples.length > 0) {
                 exampleInputs[0].value = word.examples[0];
-            } 
-            
+            }
+
             if (word.examples.length > 1) {
                 for (let i = 1; i < word.examples.length; i++) {
                     addExampleInput();
@@ -234,9 +238,9 @@ function addDynamicContentToWordSetPage(id) {
 
     function addEventListenerToFirstDeleteExampleElement() {
         const deleteExample1 = document.querySelector('#delete-example-1');
-            deleteExample1.addEventListener('click', (e) => {
-                e.preventDefault();
-                deleteExample1.parentElement.remove();
+        deleteExample1.addEventListener('click', (e) => {
+            e.preventDefault();
+            deleteExample1.parentElement.remove();
         });
     }
 }

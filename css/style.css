@@ -1,3 +1,188 @@
+ @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans:wght@300;400&display=swap");
+
+:root {
+  --blue-fill: #25567b;
+  --corgi-color-fill: #ffc373;
+  --corgi-color-fill-15: rgba(255, 195, 115, 0.15);
+  --font-size: 20px;
+}
+
+* {
+  font-size: var(--font-size);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body,
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #fff;
+  font-family: "Open Sans", sans-serif;
+  font-size: var(--font-size);
+}
+
+.navbar {
+  background-color: var(--blue-fill) !important;
+  font-size: var(--font-size);
+  box-sizing: border-box;
+  height: 80px;
+}
+
+.navbar-brand {
+  color: var(--corgi-color-fill);
+  width: 193px;
+  margin-right: 93px;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: #fff;
+}
+
+.logo-nav {
+  font-size: 50px;
+}
+
+.corgi-logo {
+    width: 60px;
+    height: 60px;
+    border: 1px solid black;
+}
+
+.logo-nav-text {
+  width: 118px;
+  letter-spacing: 1px;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
+  line-height: 1.2;
+}
+
+/* .lang-img {
+    width: 20px;
+} */
+
+.navbar-nav {
+    width: 370px;
+}
+
+.language * {
+    font-size: 14px;
+}
+
+.language label{
+    box-sizing: border-box;
+    width: 45px;
+}
+
+.language select{
+    box-sizing: border-box;
+    width: 130px;
+    border: none;
+}
+
+#languages {
+    background-color: var(--blue-fill);
+    color: white;
+}
+
+.user-logo {
+    width: 60px;
+    height: 60px;
+    border: 1px solid black;
+    border-radius: 50%;
+}
+
+
+#main-page {
+    margin-top: 135px;
+}
+
+.title-and-add-button {
+    height: 49px;
+}
+
+h1 {
+    font-size: 36px;
+    margin: 0px;
+}
+
+.btn-primary {
+    background-color: var(--corgi-color-fill);
+    color: black;
+    border: none;
+    border-radius: 8px;
+}
+
+.btn-primary:hover {
+    background-color: var(--corgi-color-fill);
+    color: black;
+}
+
+.add-word-set {
+    box-sizing: border-box;
+    margin: 0 !important;
+}
+
+.add-word-set-button {
+    box-sizing: border-box;
+    width: 255px;
+    height: 49px;
+}
+
+
+
+.table-div {
+    overflow: hidden;
+    border-radius: 8px;
+    margin-top: 45px;
+}
+
+.table-striped>thead {
+    background-color: var(--corgi-color-fill-15);
+}
+
+.table-striped>tbody>tr:nth-child(even)>td, 
+.table-striped>tbody>tr:nth-child(even)>th {
+    background-color: var(--corgi-color-fill-15);
+}
+
+.table-striped>tbody>tr:nth-child(odd)>td, 
+.table-striped>tbody>tr:nth-child(odd)>th{
+   background-color: white !important;
+ }
+
+ .table a {
+    text-decoration: none;
+    color: black;
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ul {
     list-style-type: none;
     margin: 0;

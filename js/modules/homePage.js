@@ -14,7 +14,7 @@ function addDynamicContentToHomePage(routes) {
     const form = document.querySelector('#add-word-set-form'),
         modal = document.querySelector('#add-word-set-modal'),
         nameInput = document.querySelector('#modal__name'),
-        wordSetsMenu = document.querySelector('.word-set-list'),
+        wordSetsTableContent = document.querySelector('.word-sets-table-content'),
         addWordSetElements = document.querySelectorAll('.add-word-set');
 
     let currentWordSetIndex = -1;
@@ -54,42 +54,37 @@ function addDynamicContentToHomePage(routes) {
         });
     }
 
-    function addEventListenerToEditWordSetElement(wordSet, editWordSetElement) {
-        editWordSetElement.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal(modal);
-            nameInput.value = wordSet.name;
-            currentWordSetIndex = wordSet.id;
-        });
-    }
-
     function renderWordSetList() {
         getWordSets()
             .then(data => {
                 let wordSets = data;
                 let wordSetListHtml = '';
                 wordSets = wordSets.filter(wordSet => wordSet.language === window.localStorage.getItem('language'));
-                wordSets.forEach(item => {
+                wordSets.forEach((item, i) => {
                     wordSetListHtml += `
-                    <li id="word-set-${item.id}">   
-                        <a class="word-set-name-list" href="/word-sets/${item.id}" onclick="route()">${item.name}</a>
-                        <a href="#" id="edit-word-set-${item.id}">Edit</a> 
-                        <a href="#" id="delete-word-set-${item.id}">Delete</a>
-                    </li>
-                `;
+                        <tr id="word-set-${item.id}">
+                            <th scope="row">${i + 1}</th>
+                            <td><a class="word-set-name" href="/word-sets/${item.id}" onclick="route()">${item.name}</a></td>
+                            <td>15</td>
+                            <td><a href="word-sets/1/training" onclick="route()">Training</a></td>
+                            <td>
+                                <a href="#" id="delete-word-set-${item.id}">
+                                    <img src="images/trash-can-solid.svg" alt="Delete"/>
+                                </a>
+                            </td>
+                        </tr>
+                    `;
 
                     routes[`/word-sets/${item.id}`] = '/pages/word-set.html';
                     routes[`/word-sets/${item.id}/training`] = '/pages/training.html';
                 });
 
-                wordSetsMenu.innerHTML = wordSetListHtml;
+                wordSetsTableContent.innerHTML = wordSetListHtml;
 
                 wordSets.forEach(item => {
-                    const editWordSet = document.querySelector(`#edit-word-set-${item.id}`),
-                        deleteWordSet = document.querySelector(`#delete-word-set-${item.id}`);
+                    const deleteWordSet = document.querySelector(`#delete-word-set-${item.id}`);
 
                     addEventListenerToDeletWordSetElement(item, deleteWordSet);
-                    addEventListenerToEditWordSetElement(item, editWordSet);
                 });
             });
     }

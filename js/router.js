@@ -1,4 +1,9 @@
 'use strict';
+import "bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle";
+import "@fortawesome/fontawesome-free/css/all.css";
+import "/css/style.css";
 import addDynamicContentToHomePage from './modules/homePage';
 import addDynamicContentToWordSetPage from './modules/wordSetPage';
 import addDynamicContentToTrainingPage from './modules/trainingPage';
@@ -44,7 +49,7 @@ const handleLocation = async () => {
     }
 
     if (path === "/") {
-        addDynamicContentToHomePage(routes);
+        //addDynamicContentToHomePage(routes);
     }
 
     if (path.replace(/\d/g, '') === '/word-sets/') {
