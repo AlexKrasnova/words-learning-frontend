@@ -1,99 +1,135 @@
-<div class="row">
-    <div class="col-12">
-        <div class="row title-and-add-button">
-            <div class="col-9">
-                <h1>Word sets</h1>
-            </div>
-            <div class="col-3 add-word-set">
-                <a class="btn btn-primary shadow add-word-set-button" href="#" role="button">Add word set</a>
-            </div>
-        </div>
+<div class="row title-and-add-button justify-content-between">
+  <div class="col-lg-9 col-md-6 col-sm-12 my-3">
+    <h1>Word sets</h1>
+  </div>
+  <div
+    class="col-lg-3 col-md-6 col-sm-12 my-3 add-word-set d-flex justify-content-md-end justify-content-sm-start align-items-center"
+  >
+    <a class="btn btn-primary shadow add-word-set-button" href="#" role="button"
+      >Add word set</a
+    >
+  </div>
+</div>
 
-        <div class="table-div mb-5">
-            <table class="table table-striped mb-0">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Number<br>of words</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody class="word-sets-table-content">
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>English 1</td>
-                        <td>15</td>
-                        <td><a href="word-sets/1/training" onclick="route()">Training</a></td>
-                        <td>
-                            <a href="#" id="delete-word-set-${item.id}">
-                                <img src="images/trash-can-solid.svg" alt="Delete"/>
-                            </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>English 2. Body parts</td>
-                        <td>20</td>
-                        <td><a href="word-sets/2/training" onclick="route()">Training</a></td>
-                        <td>
-                            <a href="#" id="delete-word-set-${item.id}"><img src="images/trash-can-solid.svg"
-                                    alt="Delete" /></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>English 3. Reading and pronunсiation</td>
-                        <td>20</td>
-                        <td><a href="word-sets/3/training" onclick="route()">Training</a></td>
-                        <td>
-                            <a href="#" id="delete-word-set-${item.id}"><img src="images/trash-can-solid.svg"
-                                    alt="Delete" /></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">4</th>
-                        <td>English 4. Developing</td>
-                        <td>25</td>
-                        <td><a href="word-sets/4/training" onclick="route()">Training</a></td>
-                        <td>
-                            <a href="#" id="delete-word-set-${item.id}"><img src="images/trash-can-solid.svg"
-                                    alt="Delete" /></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">5</th>
-                        <td>English 5. Strike</td>
-                        <td>20</td>
-                        <td><a href="word-sets/5/training" onclick="route()">Training</a></td>
-                        <td>
-                            <a href="#" id="delete-word-set-${item.id}"><img src="images/trash-can-solid.svg"
-                                    alt="Delete" /></a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<div class="table-div mb-5">
+  <table class="table table-striped mb-0">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Number<br />of words</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody class="word-sets-table-content">
+      <tr>
+        <th scope="row">1</th>
+        <td>English 1</td>
+        <td>15</td>
+        <td>
+          <a href="word-sets/1/training" onclick="route()">Training</a>
+        </td>
+        <td>
+          <a href="#" id="delete-word-set-${item.id}">
+            <img src="images/trash-can-solid.svg" alt="Delete" />
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">2</th>
+        <td>English 2. Body parts</td>
+        <td>20</td>
+        <td>
+          <a href="word-sets/2/training" onclick="route()">Training</a>
+        </td>
+        <td>
+          <a href="#" id="delete-word-set-${item.id}"
+            ><img src="images/trash-can-solid.svg" alt="Delete"
+          /></a>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">3</th>
+        <td>English 3. Reading and pronunсiation</td>
+        <td>20</td>
+        <td>
+          <a href="word-sets/3/training" onclick="route()">Training</a>
+        </td>
+        <td>
+          <a href="#" id="delete-word-set-${item.id}"
+            ><img src="images/trash-can-solid.svg" alt="Delete"
+          /></a>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">4</th>
+        <td>English 4. Developing</td>
+        <td>25</td>
+        <td>
+          <a href="word-sets/4/training" onclick="route()">Training</a>
+        </td>
+        <td>
+          <a href="#" id="delete-word-set-${item.id}"
+            ><img src="images/trash-can-solid.svg" alt="Delete"
+          /></a>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">5</th>
+        <td>English 5. Strike</td>
+        <td>20</td>
+        <td>
+          <a href="word-sets/5/training" onclick="route()">Training</a>
+        </td>
+        <td>
+          <a href="#" id="delete-word-set-${item.id}"
+            ><img src="images/trash-can-solid.svg" alt="Delete"
+          /></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="container" style="margin-top: 120px">
+  <div class="row">
+    <div class="col-md-4" style="background: rgb(233, 189, 189)">.col-md-4</div>
+    <div class="col-md-4 offset-md-4" style="background: rgb(231, 233, 189)">
+      .col-md-4 .offset-md-4
     </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 offset-md-3" style="background: rgb(189, 224, 233)">
+      .col-md-3 .offset-md-3
+    </div>
+    <div class="col-md-3 offset-md-3" style="background: rgb(233, 189, 229)">
+      .col-md-3 .offset-md-3
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 offset-md-3" style="background: rgb(189, 210, 233)">
+      .col-md-6 .offset-md-3
+    </div>
+  </div>
 </div>
 
 <div id="add-word-set-modal" class="modal hide">
-    <div class="modal__dialog">
-        <div class="modal__content">
-            <form data-post id="add-word-set-form" action="#">
-                <div data-close class="modal-close">&times;</div>
-                <h3>Add/edit word set</h3>
-                <div class="modal-form-element">
-                    <label for="modal__name">Enter word set name: </label>
-                    <input required id="modal__name" name="name" type="text" />
-                </div>
-                <div class="modal-form-element">
-                    <button id="save-button">Save</button>
-                </div>
-            </form>
+  <div class="modal__dialog">
+    <div class="modal__content">
+      <form data-post id="add-word-set-form" action="#">
+        <div data-close class="modal-close">&times;</div>
+        <h3>Add/edit word set</h3>
+        <div class="modal-form-element">
+          <label for="modal__name">Enter word set name: </label>
+          <input required id="modal__name" name="name" type="text" />
         </div>
+        <div class="modal-form-element">
+          <button id="save-button">Save</button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 
 <!-- <div id="dialog-modal" class="modal hide">
