@@ -3,7 +3,8 @@ import {
     addNewWordToSet,
     editWord,
     deleteWord,
-    deleteWordFromSet
+    deleteWordFromSet,
+    editWordSet
 } from './db';
 
 import {
@@ -14,24 +15,29 @@ import {
 function addDynamicContentToWordSetPage(id) {
     const wordSetTitle = document.querySelector('.word-set-title'),
         wordsElement = document.querySelector('.words'),
-        trainings = document.querySelectorAll('.training-button'),
-        modal = document.querySelector('.modal'),
+        wordsTableContent = document.querySelector('.words-table-content'),
+        training = document.querySelector('.training-button'),
+        editWordSetNameModal = document.querySelector('#edit-wordset-name-modal'),
+        addWordModal = document.querySelector('#add-word-modal'),
         addWordElements = document.querySelectorAll('.add-word'),
         addExampleElement = document.querySelector('#add-example'),
-        nameInput = document.querySelector('#word-name-input'),
+        wordNameInput = document.querySelector('#word-name-input'),
         translationInput = document.querySelector('#word-translation-input'),
         commentInput = document.querySelector('#word-comment-input'),
         exampleInputsWrapper = document.querySelector('#word-examples-inputs-wrapper'),
-        form = document.querySelector('#add-word-form');
+        addWordForm = document.querySelector('#add-word-form'),
+        editWordsetForm = document.querySelector('#edit-word-set-form');
 
     let currentWordIndex = -1,
         currentWordSet,
         numberOfExampleInputs = 1;
 
-    renderWords();
+    renderWordsAndTitle();
     addEventListenerToAddWordElements();
-    bindCloseModalToEvents();
-    bindEventListenerToForm();
+    bindCloseModalToEvents(addWordModal);
+    bindCloseModalToEvents(editWordSetNameModal);
+    bindEventListenerToAddWordForm();
+    bindEventListenerToEditWordsetForm();
     addEventListenerToAddExampleElement();
     addEventListenerToFirstDeleteExampleElement();
 
@@ -39,11 +45,23 @@ function addDynamicContentToWordSetPage(id) {
         return (word1.name).toLowerCase().localeCompare((word2.name).toLowerCase());
     };
 
-    function renderWords() {
+    function renderWordsAndTitle() {
         getWordSet(id)
             .then(data => {
                 currentWordSet = data;
-                wordSetTitle.textContent = currentWordSet.name;
+                wordSetTitle.innerHTML = `${currentWordSet.name} 
+                    <a href="#" id="edit-wordset-name">
+                        <img src="/images/pencil-solid.svg" alt="Edit" />
+                    </a>
+                `;
+                const editWordSetNameElement = document.querySelector('#edit-wordset-name');
+                editWordSetNameElement.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openModal(editWordSetNameModal);
+                    const wordSetNameInput = document.querySelector('#wordset-name-input');
+                    wordSetNameInput.value = currentWordSet.name;
+                    // currentWordSetIndex = currentWordSet.id;
+                });
                 let words = currentWordSet.words;
                 words = words.sort(compareWordsByName);
                 let wordsHtml = '';
@@ -54,20 +72,46 @@ function addDynamicContentToWordSetPage(id) {
                     });
                     examplesHtml = examplesHtml.slice(4);
                     wordsHtml += `
-                    <li id="word-${word.id}" class="word-set__word">
-                        <div class="word">
-                            <div class="word-element number">${i + 1}</div>
-                            <div class="word-element">${word.name}</div>
-                            <div class="word-element">${word.translation}</div>
-                            <div class="word-element">${examplesHtml}</div>
-                            <div class="word-element">${word.comment ? word.comment : ''}</div>
-                            <div id="edit-word-${word.id}" class="word-element"><a href="#">Edit</a></div>
-                            <div id="delete-word-${word.id}" class="word-element"><a href="#">Delete</a></div>
-                        </div>
-                    </li>
-                `;
+                        <tr id="word-${word.id}">
+                            <th scope="row">${i+1}</th>
+                            <td class="medium-collumn">${word.name}</td>
+                            <td class="small-column">
+                                <a href="#" id="say-word-1">
+                                    <img src="/images/volume-low-solid.svg" alt="Sound" />
+                                </a>
+                            </td>
+                            <td class="medium-collumn">${word.translation}</td>
+                            <td class="large-collumn">${examplesHtml}</td>
+                            <td class="large-collumn">${word.comment? word.comment : ""}</td>
+                            <td class="small-column">
+                                <a href="#" id="edit-word-${word.id}">
+                                    <img src="/images/pencil-solid.svg" alt="Edit" />
+                                </a>
+                            </td>
+                            <td class="small-column">
+                                <a href="#" id="delete-word-${word.id}">
+                                    <img src="/images/trash-can-solid.svg" alt="Delete" />
+                                </a>
+                            </td>
+                        </tr>
+                    `;
+
+                    //     `
+                    //     <li id="word-${word.id}" class="word-set__word">
+                    //         <div class="word">
+                    //             <div class="word-element number">${i + 1}</div>
+                    //             <div class="word-element">${word.name}</div>
+                    //             <div class="word-element">${word.translation}</div>
+                    //             <div class="word-element">${examplesHtml}</div>
+                    //             <div class="word-element">${word.comment ? word.comment : ''}</div>
+                    //             <div id="edit-word-${word.id}" class="word-element"><a href="#">Edit</a></div>
+                    //             <div id="delete-word-${word.id}" class="word-element"><a href="#">Delete</a></div>
+                    //         </div>
+                    //     </li>
+                    // `;
                 });
-                wordsElement.innerHTML = wordsHtml;
+                //wordsElement.innerHTML = wordsHtml;
+                wordsTableContent.innerHTML = wordsHtml;
 
                 words.forEach(item => {
                     const editWord = document.querySelector(`#edit-word-${item.id}`),
@@ -77,21 +121,44 @@ function addDynamicContentToWordSetPage(id) {
                     addEventListenerToEditWordElement(item, editWord);
                 });
 
-                trainings.forEach(training => {
-                    training.innerHTML = `<div>
-                        <a href="${id}/training" onclick="route()">Training</a></div>
+
+                training.innerHTML = `
+                    <a class="btn btn-primary shadow btn-lg" href="${id}/training" onclick="route()" role="button">
+                        Training
+                    </a>
                 `;
-                });
+
+                // `<div>
+                //         <a href="${id}/training" onclick="route()">Training</a></div>
+                // `;
 
 
             });
     }
 
-    function bindEventListenerToForm() {
-        form.addEventListener('submit', (e) => {
+    function bindEventListenerToEditWordsetForm() {
+        editWordsetForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const formData = new FormData(form);
+            const formData = new FormData(editWordsetForm);
+            const object = Object.fromEntries(formData.entries());
+            object.language = window.localStorage.getItem('language');
+            editWordSet(currentWordSet.id, object)
+                .then(data => {
+                    console.log(data.data);
+                    renderWordsAndTitle();
+                })
+                .finally(() => {
+                    closeModal(editWordSetNameModal);
+                });
+        });
+    }
+
+    function bindEventListenerToAddWordForm() {
+        addWordForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(addWordForm);
             const object = Object.fromEntries(formData.entries());
             const wordToAddOrEdit = {};
             wordToAddOrEdit.name = object.name;
@@ -111,19 +178,19 @@ function addDynamicContentToWordSetPage(id) {
             if (currentWordIndex < 0) {
                 addNewWordToSet(currentWordSet.id, wordToAddOrEdit)
                     .then(data => {
-                        renderWords();
+                        renderWordsAndTitle();
                     })
                     .finally(() => {
-                        closeModal(modal);
+                        closeModal(addWordModal);
                     });
             } else {
                 editWord(currentWordIndex, wordToAddOrEdit)
                     .then(data => {
                         console.log(data.data);
-                        renderWords();
+                        renderWordsAndTitle();
                     })
                     .finally(() => {
-                        closeModal(modal);
+                        closeModal(addWordModal);
                     });
             }
         });
@@ -156,7 +223,7 @@ function addDynamicContentToWordSetPage(id) {
         addWordElements.forEach(addWordElement => {
             addWordElement.addEventListener('click', (e) => {
                 e.preventDefault();
-                openModal(modal);
+                openModal(addWordModal);
             });
         });
     }
@@ -178,8 +245,8 @@ function addDynamicContentToWordSetPage(id) {
     function addEventListenerToEditWordElement(word, editWordElement) {
         editWordElement.addEventListener('click', (e) => {
             e.preventDefault();
-            openModal(modal);
-            nameInput.value = word.name;
+            openModal(addWordModal);
+            wordNameInput.value = word.name;
             translationInput.value = word.translation;
             commentInput.value = word.comment;
             currentWordIndex = word.id;
@@ -200,28 +267,28 @@ function addDynamicContentToWordSetPage(id) {
         });
     }
 
-    function bindCloseModalToEvents() {
+    function bindCloseModalToEvents(modal) {
 
         modal.addEventListener('click', e => {
-            if (e.target === modal || e.target.getAttribute('data-close') == '') {
-                closeModal(modal);
+            if (e.target ===  modal || e.target.getAttribute('data-close') == '') {
+                closeModal( modal);
             }
         });
 
         document.addEventListener('keydown', e => {
-            if (e.code === 'Escape' && modal.classList.contains('show')) {
-                closeModal(modal);
+            if (e.code === 'Escape' &&  modal.classList.contains('show')) {
+                closeModal( modal);
             }
         });
     }
 
-    function openModal() {
+    function openModal(modal) {
         show(modal);
-        nameInput.focus();
+        wordNameInput.focus();
         document.body.style.overflow = 'hidden';
     }
 
-    function closeModal() {
+    function closeModal(modal) {
         hide(modal);
         document.body.style.overflow = '';
         currentWordIndex = -1;
@@ -233,7 +300,7 @@ function addDynamicContentToWordSetPage(id) {
             </div>
         `;
         addEventListenerToFirstDeleteExampleElement();
-        form.reset();
+        addWordForm.reset();
     }
 
     function addEventListenerToFirstDeleteExampleElement() {

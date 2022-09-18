@@ -64,10 +64,10 @@ function addDynamicContentToHomePage(routes) {
                     wordSetListHtml += `
                         <tr id="word-set-${item.id}">
                             <th scope="row">${i + 1}</th>
-                            <td><a class="word-set-name" href="/word-sets/${item.id}" onclick="route()">${item.name}</a></td>
-                            <td>15</td>
-                            <td><a href="word-sets/1/training" onclick="route()">Training</a></td>
-                            <td>
+                            <td class="word-set-name-td"><a class="word-set-name" href="/word-sets/${item.id}" onclick="route()">${item.name}</a></td>
+                            <td class="medium-column-word-sets">${item.wordCount}</td>
+                            <td><a class="btn btn-secondary btn-sm shadow-sm medium-column-word-sets" href="word-sets/1/training" onclick="route()" role="button">Training</a></td>
+                            <td class="small-column">
                                 <a href="#" id="delete-word-set-${item.id}">
                                     <img src="images/trash-can-solid.svg" alt="Delete"/>
                                 </a>
