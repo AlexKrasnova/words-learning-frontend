@@ -2,13 +2,15 @@
 
 :root {
   --blue-fill: #25567b;
+  --blue-fill-50: rgba(37, 86, 123, 0);
   --corgi-color-fill: #ffc373;
   --corgi-color-fill-15: rgba(255, 195, 115, 0.15);
-  --font-size: 20px;
+  --font-size-big: 20px;
+  --font-size: 16px;
 }
 
 * {
-  font-size: var(--font-size);
+  font-size: var(--font-size-big);
 }
 
 html {
@@ -25,12 +27,12 @@ html {
 body {
   background-color: #fff;
   font-family: "Open Sans", sans-serif;
-  font-size: var(--font-size);
+  font-size: var(--font-size-big);
 }
 
 .navbar {
   background-color: var(--blue-fill) !important;
-  font-size: var(--font-size);
+  font-size: var(--font-size-big);
   box-sizing: border-box;
   /* height: 80px; */
   height: auto;
@@ -139,9 +141,13 @@ body {
   margin-top: 135px;
 }
 
-/* .title-and-add-button {
-  height: 49px;
-} */
+#main-page table * {
+    font-size: var(--font-size);
+}
+
+.title-and-add-button {
+    height: 49px;
+}
 
 h1 {
   font-size: 36px;
@@ -161,8 +167,10 @@ h1 {
 }
 
 .add-word-set {
-  box-sizing: border-box;
-  margin: 0 !important;
+    box-sizing: border-box;
+    /* width: 255px; */
+    height: 49px;
+    margin: 0 !important;
 }
 
 .add-word-set-button {
@@ -170,6 +178,15 @@ h1 {
   width: 255px;
   height: 49px;
 }
+
+.btn-secondary:hover {
+    background-color: var(--blue-fill-50);
+    color: black;
+}
+
+/* .small-button {
+    border-radius: 6px;
+} */
 
 .table-div {
   overflow: hidden;
@@ -179,17 +196,50 @@ h1 {
 
 .table-striped > thead {
   background-color: var(--corgi-color-fill-15);
+.table>:not(caption)>*>* {
+    padding: 10px 20px;
+}
+
+.table-striped>thead {
+    background-color: var(--corgi-color-fill-15);
 }
 
 .table-striped > tbody > tr:nth-child(even) > td,
 .table-striped > tbody > tr:nth-child(even) > th {
   background-color: var(--corgi-color-fill-15);
+.table-striped>tbody>tr:nth-of-type(even)>* {
+    --bs-table-accent-bg: var(--corgi-color-fill-15);
+}
+
+.table-striped>tbody>tr:nth-of-type(odd)>* {
+    --bs-table-accent-bg: white;
+}
+
+td, th {
+    border-style: none;
+    vertical-align: middle;
+}
+
+.small-column {
+    width: 20px;
 }
 
 .table-striped > tbody > tr:nth-child(odd) > td,
 .table-striped > tbody > tr:nth-child(odd) > th {
   background-color: white !important;
 }
+.medium-column {
+    width: 13%;
+}
+
+.large-column {
+    width: 26%;
+}
+
+/* .table-striped>tbody>tr:nth-child(odd)>td,
+.table-striped>tbody>tr:nth-child(odd)>th{
+   background-color: white !important;
+ } */
 
 .table-striped > tbody > tr:nth-of-type(odd) > * {
   --bs-table-accent-bg: white;

@@ -1,86 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Words Learning</title>
     <!-- <link rel="stylesheet" href="/css/style.css" /> -->
-  </head>
+</head>
 
-  <body>
+<body>
     <div id="root">
-      <nav
-        id="main-nav"
-        class="navbar navbar-expand-lg bg-primary navbar-dark fixed-top px-3"
-      >
-        <div class="container-lg container-fluid-md">
-          <a
-            class="navbar-brand d-flex align-items-center justify-content-between"
-            href="/"
-            onclick="route()"
-          >
-            <!-- <i class="fa-solid fa-shield-dog logo-nav px-3 align-middle"></i> -->
-            <img
-              class="d-block rounded-circle corgi-logo"
-              src="images/fatty-corgi.jpg"
-              alt="Corgi-logo"
-            />
-            <span class="logo-nav-text text-wrap">Study with Corgi</span>
-          </a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarContent"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="navbar-nav d-flex justify-content-between">
-              <li class="nav-item">
-                <a class="nav-link p-0" href="/" onclick="route()">Word sets</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link p-0" href="/all" onclick="route()"
-                  >All words</a
-                >
-              </li>
-              <li class="nav-item">
-                <a class="nav-link p-0" href="/training" onclick="route()"
-                  >Training</a
-                >
-              </li>
-            </ul>
-          </div>
-          <div
-            class="d-flex flex-row align-items-center justify-content-md-end justify-content-sm-start language me-sm-0 me-md-5"
-          >
-            <label
-              for="languages"
-              class="text-white align-middle language-label"
-              >I learn:</label
-            >
-            <!-- <img src="./images/united-kingdom.png" class="lang-img" alt="" /> -->
-            <select name="languages" id="languages" class="form-select ms-2">
-              <option value="ENGLISH">English</option>
-              <option value="POLISH">Polish</option>
-              <option value="UKRAINIAN">Ukrainian</option>
-            </select>
-          </div>
-          <div class="user-logo d-flex align-items-center">
-            <img
-              class="d-block mx-auto"
-              src="images/user-solid.svg"
-              alt="User-logo"
-            />
-          </div>
-        </div>
-      </nav>
-      <div id="main-page" class="container-lg container-fluid-md"></div>
+        <nav id="main-nav" class="navbar navbar-expand-lg bg-primary navbar-dark fixed-top px-3">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center justify-content-between" href="/" onclick="route()">
+                    <!-- <i class="fa-solid fa-shield-dog logo-nav px-3 align-middle"></i> -->
+                    <img class="d-block rounded-circle corgi-logo" src="/images/fatty-corgi.jpg" alt="Corgi-logo" />
+                    <span class="logo-nav-text text-wrap">Study with Corgi</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav d-flex justify-content-between">
+                        <li class="nav-item">
+                            <a class="nav-link p-0" href="/" onclick="route()">Word sets</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link p-0" href="/all" onclick="route()">All words</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link p-0" href="/training" onclick="route()">Training</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="d-flex flex-row align-items-center justify-content-end language me-md-5 me-sm-0">
+                    <label for="languages" class="text-white align-middle language-label">I learn:</label>
+                    <!-- <img src="./images/united-kingdom.png" class="lang-img" alt="" /> -->
+                    <select name="languages" id="languages" class="form-select ms-2">
+                        <option value="ENGLISH">English</option>
+                        <option value="POLISH">Polish</option>
+                        <option value="UKRAINIAN">Ukrainian</option>
+                    </select>
+                </div>
+                <div class="user-logo d-flex align-items-center">
+                    <img class="d-block mx-auto" src="/images/user-solid.svg" alt="User-logo" />
+                </div>
+            </div>
+        </nav>
+        <div id="main-page" class="container"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/bundle.js"></script>
-  </body>
+</body>
+
 </html>

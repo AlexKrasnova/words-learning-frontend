@@ -1,5 +1,5 @@
 'use strict';
-import "bootstrap";
+// import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle";
 import "@fortawesome/fontawesome-free/css/all.css";
@@ -35,8 +35,8 @@ const route = (event) => {
     event = event || window.event;
     event.preventDefault();
     window.history.pushState({}, "", event.target.href);
-    handleLocation();
-    //updateDynamicRoutesAndHandleLocation();
+    //handleLocation();
+    updateDynamicRoutesAndHandleLocation();
 };
 
 const handleLocation = async () => {
@@ -50,7 +50,7 @@ const handleLocation = async () => {
     }
 
     if (path === "/") {
-        //addDynamicContentToHomePage(routes);
+        addDynamicContentToHomePage(routes);
     }
 
     if (path.replace(/\d/g, '') === '/word-sets/') {
@@ -87,8 +87,9 @@ const updateDynamicRoutesAndHandleLocation = () => {
         
 };
 
-window.onpopstate = handleLocation;
+//window.onpopstate = handleLocation;
+window.onpopstate = updateDynamicRoutesAndHandleLocation;
 window.route = route;
 
-handleLocation();
-//updateDynamicRoutesAndHandleLocation();
+//handleLocation();
+updateDynamicRoutesAndHandleLocation();
