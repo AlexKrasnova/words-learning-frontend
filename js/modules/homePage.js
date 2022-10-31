@@ -13,7 +13,7 @@ function addDynamicContentToHomePage(routes) {
 
     const form = document.querySelector('#add-word-set-form'),
         modal = document.querySelector('#add-word-set-modal'),
-        nameInput = document.querySelector('#modal__name'),
+        nameInput = document.querySelector('#word-set-name'),
         wordSetsTableContent = document.querySelector('.word-sets-table-content'),
         addWordSetElements = document.querySelectorAll('.add-word-set');
 
@@ -66,7 +66,7 @@ function addDynamicContentToHomePage(routes) {
                             <th scope="row">${i + 1}</th>
                             <td class="word-set-name-td"><a class="word-set-name" href="/word-sets/${item.id}" onclick="route()">${item.name}</a></td>
                             <td class="medium-column-word-sets">${item.wordCount}</td>
-                            <td><a class="btn btn-secondary btn-sm shadow-sm medium-column-word-sets" href="word-sets/1/training" onclick="route()" role="button">Training</a></td>
+                            <td><a class="btn btn-secondary btn-sm shadow-sm medium-column-word-sets small-button" href="word-sets/1/training" onclick="route()" role="button">Training</a></td>
                             <td class="small-column">
                                 <a href="#" id="delete-word-set-${item.id}">
                                     <img src="images/trash-can-solid.svg" alt="Delete"/>
@@ -84,7 +84,7 @@ function addDynamicContentToHomePage(routes) {
                 wordSets.forEach(item => {
                     const deleteWordSet = document.querySelector(`#delete-word-set-${item.id}`);
 
-                    addEventListenerToDeletWordSetElement(item, deleteWordSet);
+                    addEventListenerToDeleteWordSetElement(item, deleteWordSet);
                 });
             });
     }
@@ -108,7 +108,7 @@ function addDynamicContentToHomePage(routes) {
                 e.preventDefault();
                 openModal(modal);
             });
-        });   
+        });
     }
 
     function bindCloseModalToEvents() {
@@ -126,7 +126,7 @@ function addDynamicContentToHomePage(routes) {
         });
     }
 
-    function addEventListenerToDeletWordSetElement(wordSet, deleteWordSetElement) {
+    function addEventListenerToDeleteWordSetElement(wordSet, deleteWordSetElement) {
         deleteWordSetElement.addEventListener('click', (e) => {
             e.preventDefault();
             if (confirm(`Are you sure you want to delete word set "${wordSet.name}"`)) {

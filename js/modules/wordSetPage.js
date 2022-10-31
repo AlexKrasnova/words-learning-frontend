@@ -73,7 +73,7 @@ function addDynamicContentToWordSetPage(id) {
                     examplesHtml = examplesHtml.slice(4);
                     wordsHtml += `
                         <tr id="word-${word.id}">
-                            <th scope="row">${i+1}</th>
+                            <th scope="row">${i + 1}</th>
                             <td class="medium-collumn">${word.name}</td>
                             <td class="small-column">
                                 <a href="#" id="say-word-1">
@@ -82,7 +82,7 @@ function addDynamicContentToWordSetPage(id) {
                             </td>
                             <td class="medium-collumn">${word.translation}</td>
                             <td class="large-collumn">${examplesHtml}</td>
-                            <td class="large-collumn">${word.comment? word.comment : ""}</td>
+                            <td class="large-collumn">${word.comment ? word.comment : ""}</td>
                             <td class="small-column">
                                 <a href="#" id="edit-word-${word.id}">
                                     <img src="/images/pencil-solid.svg" alt="Edit" />
@@ -117,7 +117,7 @@ function addDynamicContentToWordSetPage(id) {
                     const editWord = document.querySelector(`#edit-word-${item.id}`),
                         deleteWord = document.querySelector(`#delete-word-${item.id}`);
 
-                    addEventListenerToDeletWordElement(item, deleteWord);
+                    addEventListenerToDeleteWordElement(item, deleteWord);
                     addEventListenerToEditWordElement(item, editWord);
                 });
 
@@ -207,14 +207,18 @@ function addDynamicContentToWordSetPage(id) {
         numberOfExampleInputs++;
         const div = document.createElement('div');
         div.innerHTML = `
-            <input class="word-example-input" name="example${numberOfExampleInputs}" type="text">
-            <a id="delete-example-${numberOfExampleInputs}" href="#">Delete</a>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control word-example-input" placeholder="Example ${numberOfExampleInputs}" name="example${numberOfExampleInputs}" aria-label="Example 1" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button id="delete-example-${numberOfExampleInputs}" class="btn btn-outline-secondary" type="button">Delete</button>
+                </div>
+            </div>
         `;
         exampleInputsWrapper.append(div);
         const deleteExample = document.querySelector(`#delete-example-${numberOfExampleInputs}`);
         deleteExample.addEventListener('click', (e) => {
             e.preventDefault();
-            deleteExample.parentElement.remove();
+            deleteExample.parentElement.parentElement.remove();
         });
 
     }
@@ -228,7 +232,7 @@ function addDynamicContentToWordSetPage(id) {
         });
     }
 
-    function addEventListenerToDeletWordElement(word, deleteWordElement) {
+    function addEventListenerToDeleteWordElement(word, deleteWordElement) {
         deleteWordElement.addEventListener('click', (e) => {
             e.preventDefault();
             if (confirm(`Are you sure you want to delete word "${word.name}" from word set "${currentWordSet.name}?"`)) {
@@ -270,14 +274,14 @@ function addDynamicContentToWordSetPage(id) {
     function bindCloseModalToEvents(modal) {
 
         modal.addEventListener('click', e => {
-            if (e.target ===  modal || e.target.getAttribute('data-close') == '') {
-                closeModal( modal);
+            if (e.target === modal || e.target.getAttribute('data-close') == '') {
+                closeModal(modal);
             }
         });
 
         document.addEventListener('keydown', e => {
-            if (e.code === 'Escape' &&  modal.classList.contains('show')) {
-                closeModal( modal);
+            if (e.code === 'Escape' && modal.classList.contains('show')) {
+                closeModal(modal);
             }
         });
     }
@@ -294,9 +298,14 @@ function addDynamicContentToWordSetPage(id) {
         currentWordIndex = -1;
         numberOfExampleInputs = 1;
         exampleInputsWrapper.innerHTML = `
-            <div>
-                <input class="word-example-input" name="example1" type="text">
-                <a id="delete-example-1" href="#">Delete</a>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control word-example-input" placeholder="Example 1" name="example1"
+                    aria-label="Example 1" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button id="delete-example-1" class="btn btn-outline-secondary" type="button">
+                        Delete
+                    </button>
+                </div>
             </div>
         `;
         addEventListenerToFirstDeleteExampleElement();

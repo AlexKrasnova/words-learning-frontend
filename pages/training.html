@@ -1,33 +1,188 @@
 <div class="row">
-    <div class="col-12">
-        <h1 class="training-title">Training "Word set 1"</h1>
-        <div class="result">
-            <h2>Result</h2>
-            <div class="result-text result-right">Right</div>
-        </div>
 
-        <div class="previous-word">
-            <h2>Previous word</h2>
-            <div class="previous-word-content">
-                translation: количественно<br>
-                name: quantitatively<br>
-                examples: In order to discuss scalability, we first need ways of discribing load and performance
-                quantitatively
+    <div class="col-12">
+        <div class="col-12 training-content">
+            <div class="cards-container">
+                <div class="card">
+                    <div class="card-body welcoming-card-body">
+                        <div class="row">
+                            <div class="col-7">
+                                <img class="d-block rounded-circle big-corgi-image"
+                                     src="/images/corgi-welcome-card.jpg" alt="Welcoming corgi"/>
+                            </div>
+                            <div class="col-5 welcoming-corgi-words">
+                                <div>Welcome to training!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4"></div>
+                            <div class="col-4 right-corgi-words d-flex justify-content-center">
+                                <div>Right!</div>
+                            </div>
+                            <div class="col-4">
+                                <img class="d-block rounded-circle previous-card-corgi"
+                                     src="/images/previous-card-corgi.jpg" alt="Previous card corgi"/>
+                            </div>
+                        </div>
+                        <div class="previous-card-word-container mt-3">
+                            <div class="previous-card-word-content d-flex flex-column justify-content-around">
+                                <div class="card-word-and-translation">
+                                    <div class="previous-card-word row">
+                                        <div class="col-3 card-labels pe-0">Word:</div>
+                                        <div class="col-7">
+                                            <span>temple</span>&nbsp;&nbsp;
+                                            <a href="#" id="say-word">
+                                                <img src="/images/volume-low-solid.svg" alt="Sound"/>
+                                            </a>
+                                        </div>
+                                        <div class="col-1">
+                                            <a href="#" id="edit-word">
+                                                <img src="/images/pencil-solid.svg" alt="Edit"/>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="previous-card-word-translation row">
+                                        <div class="col-3 card-labels pe-0">Translation:</div>
+                                        <div class="col-9">висок</div>
+                                    </div>
+                                </div>
+                                <!--<div class="previous-card-examples mt-1">
+                                    Examples:
+                                    <ul class="previous-card-examples-list">
+                                        <li>
+                                            The silence was so pressing that Tom could hear the beating of his heart and
+                                            the thudding of blood in his temples.
+                                        </li>
+                                        <li>
+                                            Consectetur adipisicing elit deleniti, saepe.
+                                        </li>
+                                        <li>
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus ea
+                                            eligendi esse laudantium nam neque nihil obcaecati quae quod reprehenderit,
+                                            suscipit?
+                                        </li>
+                                    </ul>
+                                </div>-->
+                                <div class="previous-card-comment mt-1">
+                                    Comment:<br>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic in
+                                    inventore non qui voluptate.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div class="card-word-and-translation mb-3">
+                            <div class="new-card-word-translation row">
+                                <div class="col-3 card-labels pe-0">Translation:</div>
+                                <div class="col-9">висок</div>
+                            </div>
+                            <div class="new-card-word row">
+                                <div class="col-3 card-labels pe-0 new-card-word-label">Word:</div>
+                                <div class="col-9">
+                                    <form data-post action="#">
+                                        <input required id="word-set-name" name="name" class="form-control"
+                                               type="text"/>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5">
+                                <img class="d-block rounded-circle new-card-corgi"
+                                     src="/images/new-card-corgi.jpg" alt="Previous card corgi"/>
+                            </div>
+                            <div class="col-5 hint-corgi-words d-flex justify-content-center">
+                                <div>temple</div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-4"></div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-secondary shadow-sm btn-sm btn-card w-100">
+                                    Hint
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <a class="btn btn-primary shadow-sm btn-sm btn-card w-100" href=""
+                                   onclick="route()" role="button">
+                                    Check
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-7">
+                                <img class="d-block rounded-circle big-corgi-image"
+                                     src="/images/farewell-corgi.jpg" alt="Farewell corgi"/>
+                            </div>
+                            <div class="col-5 farewell-corgi-words">
+                                <div>Congratulations!<br>Your result - 18/20</div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-4"></div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-secondary shadow-sm btn-sm btn-card">
+                                    To word set
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <a class="btn btn-primary shadow-sm btn-sm btn-card try-again-btn" href=""
+                                   onclick="route()" role="button">
+                                    Train again
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="training">
-            <h2>Write a word</h2>
-            <form id="training-form">
-                <label id="word-label" for="word-input">шаблонный</label>
-                <input id="word-input" type="text" autocomplete="off" autofocus="autofocus">
-                <div><a id="hint" href="">hint</a></div>
-                <input id="word-submit" type="submit" value="submit">
-            </form>
-        </div>
-        <div class="training-end">
-            <h2>Congratulations! Training is over!</h2>
-            <a href="/" onclick="route()">Go to word sets</a>
-            <a href="" onclick="route()" id="train-again">Train again</a>
+    </div>
+</div>
+</div>
+
+<br><br><br><br><br><br>
+<div class="col-12">
+    <h1 class="training-title">Training "Word set 1"</h1>
+    <div class="result">
+        <h2>Result</h2>
+        <div class="result-text result-right">Right</div>
+    </div>
+
+    <div class="previous-word">
+        <h2>Previous word</h2>
+        <div class="previous-word-content">
+            translation: количественно<br>
+            name: quantitatively<br>
+            examples: In order to discuss scalability, we first need ways of discribing load and performance
+            quantitatively
         </div>
     </div>
+    <div class="training">
+        <h2>Write a word</h2>
+        <form id="training-form">
+            <label id="word-label" for="word-input">шаблонный</label>
+            <input id="word-input" type="text" autocomplete="off" autofocus="autofocus">
+            <div><a id="hint" href="">hint</a></div>
+            <input id="word-submit" type="submit" value="submit">
+        </form>
+    </div>
+    <div class="training-end">
+        <h2>Congratulations! Training is over!</h2>
+        <a href="/" onclick="route()">Go to word sets</a>
+        <a href="" onclick="route()" id="train-again">Train again</a>
+    </div>
+</div>
 </div>
