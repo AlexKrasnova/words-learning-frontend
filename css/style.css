@@ -181,6 +181,11 @@ h1 {
     color: black;
 }
 
+.btn-secondary:focus {
+    background-color: var(--blue-fill-50);
+    color: black;
+}
+
 .small-button {
     padding: 3.5px 7px;
 }
@@ -245,12 +250,12 @@ td, th {
 
 .cards-container {
     position: relative;
-    /*left: 43px;*/
-    left: -463px;
+    left: 43px;
+    /*left: -463px;*/
     /*left: -972px;*/
     /*left: 43px;*/
-    width: 5090px;
-    display: flex;
+    /*width: 5090px;*/
+    /*display: flex;*/
 }
 
 .card {
@@ -365,10 +370,6 @@ td, th {
 
 .btn-card {
     font-size: 14px;
-}
-
-.try-again-btn {
-    width: 119px;
 }
 
 

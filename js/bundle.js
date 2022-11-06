@@ -240,84 +240,472 @@ function addDynamicContentToTrainingPage(id) {
     (0,_db__WEBPACK_IMPORTED_MODULE_0__.getWordSet)(id)
         .then(data => {
             let currentWordSet = data;
-            const trainingTitle = document.querySelector('.training-title'),
-                result = document.querySelector('.result'),
-                resultText = document.querySelector('.result-text'),
-                previousWord = document.querySelector('.previous-word'),
-                previousWordContent = document.querySelector('.previous-word-content'),
-                training = document.querySelector('.training'),
-                wordInput = document.querySelector('#word-input'),
-                wordLabel = document.querySelector('#word-label'),
-                trainingForm = document.querySelector('#training-form'),
-                hint = document.querySelector('#hint'),
-                trainingEnd = document.querySelector('.training-end'),
-                trainAgain = document.querySelector('#train-again');
-            trainingTitle.textContent = `Training "${currentWordSet.name}"`;
-
-            (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(result);
-            (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(previousWord);
-            (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(trainingEnd);
-
-
-
-            trainAgain.href = `/word-sets/${id}/training`;
-
             let words = currentWordSet.words;
+
             words = words.sort((a, b) => 0.5 - Math.random());
-            let currentIndex = 0;
 
-            let word = words[0];
+            const trainingTitle = document.querySelector('.training-title'),
+            wordSetLink = document.querySelector('.word-set-link');
 
-            wordLabel.textContent = word.translation;
+            wordSetLink.href = `/word-sets/${currentWordSet.id}`;
 
-            hint.addEventListener('click', (e) => {
-                e.preventDefault();
-                alert(word.name);
+            trainingTitle.textContent = `Training "${currentWordSet.name}"`;
+            addCards();
+            addEventListenerToHintButtons();
+            addEventListenerToForm();
+
+            const editWordElements = document.querySelectorAll('.edit-word');
+            editWordElements.forEach((editWordElement, i) => {
+                editWordElement.addEventListener('click', (e) => {
+                    e.preventDefault();
+                })
             });
 
-            trainingForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                (0,_utils__WEBPACK_IMPORTED_MODULE_1__.show)(result);
+            function addEventListenerToHintButtons() {
+                const hintButtons = document.querySelectorAll('.hint-btn');
 
-                if (wordInput.value === word.name) {
-                    resultText.textContent = 'Right!';
-                    resultText.classList.add('result-right');
-                    resultText.classList.remove('result-wrong');
-                } else {
-                    resultText.textContent = 'Wrong';
-                    resultText.classList.remove('result-right');
-                    resultText.classList.add('result-wrong');
-                    (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(previousWord);
-                    return;
-                }
+                hintButtons.forEach((hintButton) => {
+                    hintButton.addEventListener('click', () => {
+                        const cardNumber = hintButton.dataset.number;
+                        const hintElement = document.querySelector(`#hint-${cardNumber}`);
+                        if (hintElement.classList.contains('hide')) {
+                            (0,_utils__WEBPACK_IMPORTED_MODULE_1__.show)(hintElement);
+                            hintButton.textContent = 'Hide';
+                        } else {
+                            (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(hintElement);
+                            hintButton.textContent = 'Hint';
+                        }
 
-                let examples = '';
-                word.examples.forEach(item => {
-                    examples += `<br>${item}`;
+                    })
+                })
+            }
+
+            /*if (currentWordSet.words.length > 0) {
+                wordCards.innerHTML = `
+                    <div id="card-0" class="card">
+                        <div id="card-body-new-0" class="card-body d-flex flex-column justify-content-between">
+                            <div class="card-word-and-translation mb-3">
+                                <div class="new-card-word-translation row">
+                                    <div class="col-3 card-labels pe-0">Translation:</div>
+                                    <div class="col-9">${words[0].translation}</div>
+                                </div>
+                                <div class="new-card-word row">
+                                    <div class="col-3 card-labels pe-0 new-card-word-label">Word:</div>
+                                    <div class="col-9">
+                                        <form data-post action="#">
+                                            <input required id="word-set-name" name="name" class="form-control"
+                                                   type="text"/>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-5">
+                                    <img class="d-block rounded-circle new-card-corgi"
+                                         src="/images/new-card-corgi.jpg" alt="Previous card corgi"/>
+                                </div>
+                                <div class="col-5 hint-corgi-words d-flex justify-content-center">
+                                    <div>${words[0].name}</div>
+                                </div>
+                            </div>
+                            <div class="row hide">
+                                <div class="col-5">
+                                    <img class="d-block rounded-circle new-card-corgi"
+                                         src="/images/new-card-corgi.jpg" alt="Previous card corgi"/>
+                                </div>
+                                <div class="col-5 hint-corgi-words d-flex justify-content-center">
+                                    <div>Wrong!</div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4"></div>
+                                <div class="col-4">
+                                    <button type="button" class="btn btn-secondary shadow-sm btn-sm btn-card w-100">
+                                        Hint
+                                    </button>
+                                </div>
+                                <div class="col-4">
+                                    <a class="btn btn-primary shadow-sm btn-sm btn-card w-100" href=""
+                                       onclick="route()" role="button">
+                                        Check
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;*/
+
+            function addCards() {
+
+                const wordCards = document.querySelector('.word-cards'),
+                    cardsContainer = document.querySelector('.cards-container');
+
+                const wordCardsWidth = words.length * 509,
+                    cardsContainerWidth = 2 * 509 + wordCardsWidth;
+
+                wordCards.style.width = `${wordCardsWidth}px`;
+                cardsContainer.style.width = `${cardsContainerWidth}px`;
+
+                wordCards.innerHTML = '';
+                words.forEach((word, i) => {
+
+                    let examples = '';
+                    if (word.examples.length > 0) {
+                        examples = 'Examples<br><ul>';
+
+                        word.examples.forEach((example) => {
+                            examples += `<li>${example}</li>`;
+                        })
+                        examples += '</ul>';
+                    }
+                    let comment = '';
+                    if (word.comment) {
+                        comment = `Comment:<br>${word.comment}`;
+                    }
+
+                    wordCards.innerHTML += `
+                        <div id="card-${i}" class="card">
+                            <div id="card-body-question-${i}" class="card-body">
+                                <div class="d-flex flex-column justify-content-between h-100">
+                                    <div class="card-word-and-translation mb-3">
+                                        <div class="new-card-word-translation row">
+                                            <div class="col-3 card-labels pe-0">Translation:</div>
+                                            <div class="col-9">${words[i].translation}</div>
+                                        </div>
+                                        <div class="new-card-word row">
+                                            <div class="col-3 card-labels pe-0 new-card-word-label">Word:</div>
+                                            <div class="col-9">
+                                                <form data-post action="#" id="training-form-${i}" class="training-form" data-number="${i}">
+                                                    <input required id="word-name-${i}" name="name" class="form-control word-name-input"
+                                                           type="text"/>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="hint-${i}" class="hide">
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <img class="d-block rounded-circle new-card-corgi"
+                                                     src="/images/new-card-corgi.jpg" alt="New card corgi"/>
+                                            </div>
+                                            <div class="col-5 hint-corgi-words d-flex justify-content-center">
+                                                <div>${words[i].name}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="wrong-${i}" class="hide m-0 p-0">
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <img class="d-block rounded-circle new-card-corgi"
+                                                     src="/images/new-card-corgi.jpg" alt="New card corgi"/>
+                                            </div>
+                                            <div class="col-5 hint-corgi-words d-flex justify-content-center">
+                                                <div>Wrong!</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mb-2">
+                                        <div class="col-4"></div>
+                                        <div class="col-4">
+                                            <button type="button" class="btn btn-secondary shadow-sm btn-sm btn-card w-100 hint-btn" data-number="${i}">
+                                                Hint
+                                            </button>
+                                        </div>
+                                        <div class="col-4">
+                                            <button type="submit" form="training-form-${i}" class="btn btn-primary shadow-sm btn-sm btn-card w-100" data-number="${i}">
+                                                Check
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+               
+                            <div id="card-body-answer-${i}" class="card-body hide">
+                                <div class="row">
+                                    <div class="col-4"></div>
+                                    <div class="col-4 right-corgi-words d-flex justify-content-center">
+                                        <div>Right!</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <img class="d-block rounded-circle previous-card-corgi"
+                                             src="/images/previous-card-corgi.jpg" alt="Previous card corgi"/>
+                                    </div>
+                                </div>
+                                <div class="previous-card-word-container mt-3">
+                                    <div class="previous-card-word-content d-flex flex-column justify-content-around">
+                                        <div class="card-word-and-translation">
+                                            <div class="previous-card-word row">
+                                                <div class="col-3 card-labels pe-0">Word:</div>
+                                                <div class="col-7">
+                                                    <span>${words[i].name}</span>&nbsp;&nbsp;
+                                                    <a href="#" id="say-word">
+                                                        <img src="/images/volume-low-solid.svg" alt="Sound"/>
+                                                    </a>
+                                                </div>
+                                                <div class="col-1">
+                                                    <a href="#" id="edit-word-${i}" class="edit-word">
+                                                        <img src="/images/pencil-solid.svg" alt="Edit"/>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="previous-card-word-translation row">
+                                                <div class="col-3 card-labels pe-0">Translation:</div>
+                                                <div class="col-9">${words[i].translation}</div>
+                                            </div>
+                                        </div>
+                                        <div id="previous-card-examples-${i}" class="mt-1">
+                                            ${examples}
+                                        </div>
+                                        <div id="previous-card-comment-${i}" class="mt-1">
+                                            ${comment}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    const previousCardComment = document.querySelector(`#previous-card-comment-${i}`),
+                        previousCardExamples = document.querySelector(`#previous-card-examples-${i}`);
+
+                    if (word.comment == null) {
+                        (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(previousCardComment);
+                    }
+
+                    if (word.examples.length === 0) {
+                        (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(previousCardExamples)
+                    }
+                })
+            }
+
+            function addEventListenerToForm() {
+                const trainingForms = document.querySelectorAll('.training-form');
+                trainingForms.forEach((form) => {
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        const cardNumber = +form.dataset.number;
+                        const wordInput = document.querySelector(`#word-name-${cardNumber}`),
+                            cardBodyAnswer = document.querySelector(`#card-body-answer-${cardNumber}`),
+                            cardBodyQuestion = document.querySelector(`#card-body-question-${cardNumber}`),
+                            wrongCorgi = document.querySelector(`#wrong-${cardNumber}`),
+                            cardsContainer = document.querySelector(`.cards-container`),
+                            wordNameInputs = document.querySelectorAll('.word-name-input');
+
+                        if (wordInput.value === words[cardNumber].name) {
+                            (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(cardBodyQuestion);
+                            (0,_utils__WEBPACK_IMPORTED_MODULE_1__.show)(cardBodyAnswer);
+                            // cardsContainer.style.transform = `translateX(-${(cardNumber) * 509}px)`;
+                            const shift = (cardNumber + 1) * 509
+                            cardsContainer.style.transform = `translateX(-${shift}px)`;
+                            if (cardNumber < words.length - 1) {
+                                wordNameInputs[cardNumber + 1].focus();
+                            }
+                        } else {
+                            wordInput.style.borderColor = "red";
+                            (0,_utils__WEBPACK_IMPORTED_MODULE_1__.show)(wrongCorgi);
+                        }
+                    })
+
+                });
+            }
+
+            /*function openModal(modal) {
+                show(modal);
+                wordNameInput.focus();
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal(modal) {
+                hide(modal);
+                document.body.style.overflow = '';
+/!*                currentWordIndex = -1;
+                numberOfExampleInputs = 1;*!/
+                exampleInputsWrapper.innerHTML = `
+            <div class="input-group mb-3">
+                <input type="text" class="form-control word-example-input" placeholder="Example 1" name="example1"
+                    aria-label="Example 1" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button id="delete-example-1" class="btn btn-outline-secondary" type="button">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        `;
+                addEventListenerToFirstDeleteExampleElement();
+                addWordForm.reset();
+            }
+
+            function addEventListenerToFirstDeleteExampleElement() {
+                const deleteExample1 = document.querySelector('#delete-example-1');
+                deleteExample1.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    deleteExample1.parentElement.remove();
+                });
+            }
+
+            function bindCloseModalToEvents(modal) {
+
+                modal.addEventListener('click', e => {
+                    if (e.target === modal || e.target.getAttribute('data-close') == '') {
+                        closeModal(modal);
+                    }
                 });
 
-                let previousWordHtml = `
-                    <b>translation:</b> ${word.translation}<br>
-                    <b>name:</b> ${word.name}
-                `;
-                if (examples != '') {
-                    previousWordHtml += `<br><b>examples:</b> ${examples}`;
-                }
-                previousWordContent.innerHTML = previousWordHtml;
+                document.addEventListener('keydown', e => {
+                    if (e.code === 'Escape' && modal.classList.contains('show')) {
+                        closeModal(modal);
+                    }
+                });
+            }
 
-                (0,_utils__WEBPACK_IMPORTED_MODULE_1__.show)(previousWord);
+            function addEventListenerToEditWordElement(word, editWordElement) {
+                editWordElement.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openModal(addWordModal);
+                    wordNameInput.value = word.name;
+                    translationInput.value = word.translation;
+                    commentInput.value = word.comment;
+                    currentWordIndex = word.id;
 
-                if (currentIndex < words.length - 1) {
-                    currentIndex++;
-                    word = words[currentIndex];
-                    wordInput.value = '';
-                    wordLabel.textContent = word.translation;
-                } else {
-                    (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(training);
-                    (0,_utils__WEBPACK_IMPORTED_MODULE_1__.show)(trainingEnd);
-                }
-            });
+                    let exampleInputs = document.querySelectorAll('.word-example-input');
+
+                    if (word.examples.length > 0) {
+                        exampleInputs[0].value = word.examples[0];
+                    }
+
+                    if (word.examples.length > 1) {
+                        for (let i = 1; i < word.examples.length; i++) {
+                            addExampleInput();
+                            exampleInputs = document.querySelectorAll('.word-example-input');
+                            exampleInputs[i].value = word.examples[i];
+                        }
+                    }
+                });
+            }*/
+
+
+                /*trainingForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    show(result);
+
+                    if (wordInput.value === word.name) {
+                        resultText.textContent = 'Right!';
+                        resultText.classList.add('result-right');
+                        resultText.classList.remove('result-wrong');
+                    } else {
+                        resultText.textContent = 'Wrong';
+                        resultText.classList.remove('result-right');
+                        resultText.classList.add('result-wrong');
+                        hide(previousWord);
+                        return;
+                    }
+
+                    let examples = '';
+                    word.examples.forEach(item => {
+                        examples += `<br>${item}`;
+                    });
+
+                    let previousWordHtml = `
+                <b>translation:</b> ${word.translation}<br>
+                <b>name:</b> ${word.name}
+            `;
+                    if (examples != '') {
+                        previousWordHtml += `<br><b>examples:</b> ${examples}`;
+                    }
+                    previousWordContent.innerHTML = previousWordHtml;
+
+                    show(previousWord);
+
+                    if (currentIndex < words.length - 1) {
+                        currentIndex++;
+                        word = words[currentIndex];
+                        wordInput.value = '';
+                        wordLabel.textContent = word.translation;
+                    } else {
+                        hide(training);
+                        show(trainingEnd);
+                    }
+                });*/
+        })
+
+    /*const trainingTitle = document.querySelector('.training-title'),
+        result = document.querySelector('.result'),
+        resultText = document.querySelector('.result-text'),
+        previousWord = document.querySelector('.previous-word'),
+        previousWordContent = document.querySelector('.previous-word-content'),
+        training = document.querySelector('.training'),
+        wordInput = document.querySelector('#word-input'),
+        wordLabel = document.querySelector('#word-label'),
+        trainingForm = document.querySelector('#training-form'),
+        hint = document.querySelector('#hint'),
+        trainingEnd = document.querySelector('.training-end'),
+        trainAgain = document.querySelector('#train-again');
+    trainingTitle.textContent = `Training "${currentWordSet.name}"`;
+
+    hide(result);
+    hide(previousWord);
+    hide(trainingEnd);
+
+
+
+    trainAgain.href = `/word-sets/${id}/training`;
+
+    let words = currentWordSet.words;
+    words = words.sort((a, b) => 0.5 - Math.random());
+    let currentIndex = 0;
+
+    let word = words[0];
+
+    wordLabel.textContent = word.translation;
+
+    hint.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert(word.name);
+    });
+
+    trainingForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        show(result);
+
+        if (wordInput.value === word.name) {
+            resultText.textContent = 'Right!';
+            resultText.classList.add('result-right');
+            resultText.classList.remove('result-wrong');
+        } else {
+            resultText.textContent = 'Wrong';
+            resultText.classList.remove('result-right');
+            resultText.classList.add('result-wrong');
+            hide(previousWord);
+            return;
+        }
+
+        let examples = '';
+        word.examples.forEach(item => {
+            examples += `<br>${item}`;
         });
+
+        let previousWordHtml = `
+            <b>translation:</b> ${word.translation}<br>
+            <b>name:</b> ${word.name}
+        `;
+        if (examples != '') {
+            previousWordHtml += `<br><b>examples:</b> ${examples}`;
+        }
+        previousWordContent.innerHTML = previousWordHtml;
+
+        show(previousWord);
+
+        if (currentIndex < words.length - 1) {
+            currentIndex++;
+            word = words[currentIndex];
+            wordInput.value = '';
+            wordLabel.textContent = word.translation;
+        } else {
+            hide(training);
+            show(trainingEnd);
+        }
+    });*/
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (addDynamicContentToTrainingPage);
@@ -7786,7 +8174,7 @@ var ___CSS_LOADER_URL_REPLACEMENT_0___ = _node_modules_css_loader_dist_runtime_g
 var ___CSS_LOADER_URL_REPLACEMENT_1___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default()(___CSS_LOADER_URL_IMPORT_1___);
 var ___CSS_LOADER_URL_REPLACEMENT_2___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default()(___CSS_LOADER_URL_IMPORT_2___);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ":root {\r\n    --blue-fill: #25567b;\r\n    --blue-fill-50: rgba(37, 86, 123, 0);\r\n    --corgi-color-fill: #ffc373;\r\n    --corgi-color-fill-15: rgba(255, 195, 115, 0.15);\r\n    --font-size-big: 20px;\r\n    --font-size: 16px;\r\n}\r\n\r\n* {\r\n    font-size: var(--font-size-big);\r\n}\r\n\r\nhtml {\r\n    scroll-behavior: smooth;\r\n}\r\n\r\nbody,\r\nhtml {\r\n    height: 100%;\r\n    margin: 0;\r\n    padding: 0;\r\n}\r\n\r\nbody {\r\n    background-color: #fff;\r\n    font-family: \"Open Sans\", sans-serif;\r\n    font-size: var(--font-size-big);\r\n}\r\n\r\n/*.container {\r\n    padding: 0;\r\n}*/\r\n\r\n.navbar {\r\n    background-color: var(--blue-fill) !important;\r\n    font-size: var(--font-size-big);\r\n    box-sizing: border-box;\r\n    /*height: 80px;*/\r\n}\r\n\r\n.navbar-brand {\r\n    color: var(--corgi-color-fill);\r\n    width: 193px;\r\n    margin-right: 93px;\r\n}\r\n\r\n@media screen and (max-width: 768px) {\r\n    .navbar-brand {\r\n        margin-right: 0;\r\n    }\r\n}\r\n\r\n.navbar-dark .navbar-nav .nav-link {\r\n    color: #fff;\r\n}\r\n\r\n.logo-nav {\r\n    font-size: 50px;\r\n}\r\n\r\n.corgi-logo {\r\n    width: 60px;\r\n    height: 60px;\r\n    border: 1px solid black;\r\n}\r\n\r\n.logo-nav-text {\r\n    width: 118px;\r\n    letter-spacing: 1px;\r\n    font-weight: 600;\r\n    font-family: \"Montserrat\", sans-serif;\r\n    line-height: 1.2;\r\n}\r\n\r\n/* .lang-img {\r\n    width: 20px;\r\n} */\r\n\r\n.navbar-nav {\r\n    width: 370px;\r\n}\r\n\r\n.language * {\r\n    font-size: 14px;\r\n}\r\n\r\n.language label {\r\n    box-sizing: border-box;\r\n    white-space: nowrap;\r\n    /* width: 45px; */\r\n}\r\n\r\n.language select {\r\n    box-sizing: border-box;\r\n    /* width: 130px; */\r\n    border: none;\r\n}\r\n\r\n#languages {\r\n    background-color: var(--blue-fill);\r\n    color: white;\r\n}\r\n\r\n.user-logo {\r\n    width: 60px;\r\n    height: 60px;\r\n    border: 1px solid black;\r\n    border-radius: 50%;\r\n}\r\n\r\n\r\n#main-page {\r\n    margin-top: 135px;\r\n}\r\n\r\n#main-page table * {\r\n    font-size: var(--font-size);\r\n}\r\n\r\n.title-and-add-button {\r\n    height: 49px;\r\n}\r\n\r\nh1 {\r\n    font-size: 36px !important;\r\n    margin: 0px;\r\n}\r\n\r\n.btn-primary {\r\n    background-color: var(--corgi-color-fill);\r\n    color: black;\r\n    border: none;\r\n    border-radius: 8px;\r\n}\r\n\r\n.btn-primary:hover {\r\n    background-color: var(--corgi-color-fill);\r\n    color: black;\r\n}\r\n\r\n.add-word-set {\r\n    box-sizing: border-box;\r\n    /* width: 255px; */\r\n    height: 49px;\r\n    margin: 0 !important;\r\n}\r\n\r\n/* .big-button {\r\n    box-sizing: border-box;\r\n    width: 100%;\r\n    height: 49px;\r\n    margin: 0 !important;\r\n} */\r\n\r\n.word-set-name-td {\r\n    width: 65%;\r\n}\r\n\r\n.medium-column-word-sets {\r\n    width: 110px;\r\n}\r\n\r\n.btn-lg {\r\n    width: 100%;\r\n    font-size: var(--font-size-big);\r\n}\r\n\r\n.btn-secondary {\r\n    background-color: var(--blue-fill-50);\r\n    color: black;\r\n    /*padding: 3.5px 7px;*/\r\n    /* border: none; */\r\n    border-radius: 8px;\r\n}\r\n\r\n.btn-secondary:hover {\r\n    background-color: var(--blue-fill-50);\r\n    color: black;\r\n}\r\n\r\n.small-button {\r\n    padding: 3.5px 7px;\r\n}\r\n\r\n.table-div {\r\n    overflow: hidden;\r\n    border-radius: 8px;\r\n    margin-top: 45px;\r\n}\r\n\r\n.table > :not(caption) > * > * {\r\n    padding: 10px 20px;\r\n}\r\n\r\n.table-striped > thead {\r\n    background-color: var(--corgi-color-fill-15);\r\n}\r\n\r\n.table-striped > tbody > tr:nth-of-type(even) > * {\r\n    --bs-table-accent-bg: var(--corgi-color-fill-15);\r\n}\r\n\r\n.table-striped > tbody > tr:nth-of-type(odd) > * {\r\n    --bs-table-accent-bg: white;\r\n}\r\n\r\ntd, th {\r\n    border-style: none;\r\n    vertical-align: middle;\r\n}\r\n\r\n.small-column {\r\n    width: 20px;\r\n}\r\n\r\n.medium-column {\r\n    width: 13%;\r\n}\r\n\r\n.large-column {\r\n    width: 26%;\r\n}\r\n\r\n/* .table-striped>tbody>tr:nth-child(odd)>td, \r\n.table-striped>tbody>tr:nth-child(odd)>th{\r\n   background-color: white !important;\r\n } */\r\n\r\n.table a {\r\n    text-decoration: none;\r\n    color: black;\r\n}\r\n\r\n.training-content {\r\n    width: 1110px;\r\n    padding: 0;\r\n    background-color: var(--corgi-color-fill-15);\r\n    border: 1px solid #777777;\r\n    border-radius: 8px;\r\n    overflow: hidden;\r\n}\r\n\r\n.cards-container {\r\n    position: relative;\r\n    /*left: 43px;*/\r\n    left: -463px;\r\n    /*left: -972px;*/\r\n    /*left: 43px;*/\r\n    width: 5090px;\r\n    display: flex;\r\n}\r\n\r\n.card {\r\n    width: 479px;\r\n    height: 360px;\r\n    margin: 30px 15px;\r\n}\r\n\r\n.card-body {\r\n    padding: 30px;\r\n}\r\n\r\n.welcoming-card-body {\r\n    padding-top: 40px;\r\n    display: flex;\r\n    align-items: center;\r\n}\r\n\r\n.big-corgi-image {\r\n    width: 230px;\r\n}\r\n\r\n.welcoming-corgi-words {\r\n    display: flex;\r\n    justify-content: center;\r\n    padding-top: 25px;\r\n    background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\r\n    background-repeat: no-repeat;\r\n}\r\n\r\n.card *{\r\n    font-size: 14px;\r\n}\r\n\r\n.right-corgi-words {\r\n    /*display: flex;*/\r\n    /*justify-content: center;*/\r\n    padding-top: 12px;\r\n    background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_1___ + ");\r\n    background-repeat: no-repeat;\r\n    background-size: 100%;\r\n}\r\n\r\n.right-corgi-words>div {\r\n    font-size: 14px;\r\n}\r\n\r\n.previous-card-corgi {\r\n    width: 105px;\r\n}\r\n\r\n.previous-card-word-container * {\r\n    font-size: 12px;\r\n}\r\n\r\n.previous-card-word-container {\r\n    height: 190px;\r\n    overflow-y: auto;\r\n    overflow-x: hidden;\r\n}\r\n\r\n/*.previous-card-word-container::-webkit-scrollbar { width: 0 !important }*/\r\n\r\n.previous-card-word-content {\r\n    min-height: 190px;\r\n}\r\n\r\n.card-word-and-translation * {\r\n    font-size: var(--font-size);\r\n}\r\n\r\n.card-labels {\r\n    color: var(--blue-fill);\r\n}\r\n\r\n.test-class {\r\n}\r\n\r\n.previous-card-examples>ul {\r\n    list-style-type: decimal;\r\n    margin-left: 15px;\r\n}\r\n\r\n.new-card-word-label {\r\n    padding-top: 7.5px;\r\n}\r\n\r\n.new-card-corgi {\r\n    width: 100%;\r\n}\r\n\r\n.hint-corgi-words {\r\n    /*display: flex;*/\r\n    /*justify-content: center;*/\r\n    padding-top: 17px;\r\n    background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_2___ + ");\r\n    background-repeat: no-repeat;\r\n    background-size: 100%;\r\n}\r\n\r\n.farewell-corgi-words {\r\n    display: flex;\r\n    justify-content: center;\r\n    padding-top: 17px;\r\n    background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\r\n    background-repeat: no-repeat;\r\n}\r\n\r\n.farewell-corgi-words>div {\r\n    font-size: 14px;\r\n}\r\n\r\n.btn-card {\r\n    font-size: 14px;\r\n}\r\n\r\n.try-again-btn {\r\n    width: 119px;\r\n}\r\n\r\n\r\n\r\nul {\r\n    list-style-type: none;\r\n    margin: 0;\r\n    padding: 0;\r\n}\r\n\r\n.hide {\r\n    display: none;\r\n}\r\n\r\n.show {\r\n    display: block;\r\n}\r\n\r\n.result-right {\r\n    color: green;\r\n}\r\n\r\n.result-wrong {\r\n    color: red;\r\n}\r\n\r\n.language {\r\n    color: grey;\r\n}\r\n\r\n.modal-form-element {\r\n    padding-bottom: 10px;\r\n}\r\n\r\n.word {\r\n    display: flex;\r\n    flex-wrap: nowrap;\r\n}\r\n\r\n.word > div {\r\n    margin: 10px;\r\n    width: 200px;\r\n}\r\n\r\n.word > div.number {\r\n    width: 50px;\r\n}\r\n\r\n.add-word-set {\r\n    margin: 10px 0;\r\n}\r\n\r\n.word-set-name-list {\r\n    text-decoration: none;\r\n    color: black;\r\n    cursor: pointer;\r\n}\r\n\r\n.modal {\r\n    position: fixed;\r\n    top: 0px;\r\n    left: 0px;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    width: 100%;\r\n    height: 100%;\r\n}\r\n\r\n.close {\r\n    border-width: 0;\r\n    background-color: white;\r\n}\r\n\r\n/* .modal__close{\r\n    position:absolute;\r\n    top:8px;right:14px;\r\n    font-size:30px;\r\n    color:#000;opacity:.5;\r\n    font-weight:700;\r\n    border:none;\r\n    background-color:transparent;\r\n    cursor:pointer\r\n} */\r\n\r\n\r\n/*\r\n.modal{\r\n    position: fixed;\r\n    top: 0px;\r\n    left: 0px;\r\n    background-color: rgba(0,0,0,.5);\r\n    width: 100%;\r\n    height: 100%;\r\n}\r\n\r\n.modal__content {\r\n    border: 1px solid black;\r\n    position: absolute;\r\n    overflow:hidden;\r\n    padding: 10px;\r\n    background-color: white;\r\n}\r\n\r\n.add-word-set {\r\n    margin-top: 10px;\r\n}\r\n\r\n.modal__dialog {\r\n    max-width: 500px;\r\n    margin: 40px auto;\r\n}\r\n\r\n.modal-close {\r\n    position: absolute;\r\n    top: 10px;\r\n    right: 10px;\r\n    cursor:pointer;\r\n    font-size:30px;\r\n    color:#000;opacity:.5;\r\n    font-weight:700;\r\n}*/\r\n", "",{"version":3,"sources":["webpack://./css/style.css"],"names":[],"mappings":"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","sourcesContent":["@import url(\"https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans:wght@300;400&display=swap\");\r\n\r\n:root {\r\n    --blue-fill: #25567b;\r\n    --blue-fill-50: rgba(37, 86, 123, 0);\r\n    --corgi-color-fill: #ffc373;\r\n    --corgi-color-fill-15: rgba(255, 195, 115, 0.15);\r\n    --font-size-big: 20px;\r\n    --font-size: 16px;\r\n}\r\n\r\n* {\r\n    font-size: var(--font-size-big);\r\n}\r\n\r\nhtml {\r\n    scroll-behavior: smooth;\r\n}\r\n\r\nbody,\r\nhtml {\r\n    height: 100%;\r\n    margin: 0;\r\n    padding: 0;\r\n}\r\n\r\nbody {\r\n    background-color: #fff;\r\n    font-family: \"Open Sans\", sans-serif;\r\n    font-size: var(--font-size-big);\r\n}\r\n\r\n/*.container {\r\n    padding: 0;\r\n}*/\r\n\r\n.navbar {\r\n    background-color: var(--blue-fill) !important;\r\n    font-size: var(--font-size-big);\r\n    box-sizing: border-box;\r\n    /*height: 80px;*/\r\n}\r\n\r\n.navbar-brand {\r\n    color: var(--corgi-color-fill);\r\n    width: 193px;\r\n    margin-right: 93px;\r\n}\r\n\r\n@media screen and (max-width: 768px) {\r\n    .navbar-brand {\r\n        margin-right: 0;\r\n    }\r\n}\r\n\r\n.navbar-dark .navbar-nav .nav-link {\r\n    color: #fff;\r\n}\r\n\r\n.logo-nav {\r\n    font-size: 50px;\r\n}\r\n\r\n.corgi-logo {\r\n    width: 60px;\r\n    height: 60px;\r\n    border: 1px solid black;\r\n}\r\n\r\n.logo-nav-text {\r\n    width: 118px;\r\n    letter-spacing: 1px;\r\n    font-weight: 600;\r\n    font-family: \"Montserrat\", sans-serif;\r\n    line-height: 1.2;\r\n}\r\n\r\n/* .lang-img {\r\n    width: 20px;\r\n} */\r\n\r\n.navbar-nav {\r\n    width: 370px;\r\n}\r\n\r\n.language * {\r\n    font-size: 14px;\r\n}\r\n\r\n.language label {\r\n    box-sizing: border-box;\r\n    white-space: nowrap;\r\n    /* width: 45px; */\r\n}\r\n\r\n.language select {\r\n    box-sizing: border-box;\r\n    /* width: 130px; */\r\n    border: none;\r\n}\r\n\r\n#languages {\r\n    background-color: var(--blue-fill);\r\n    color: white;\r\n}\r\n\r\n.user-logo {\r\n    width: 60px;\r\n    height: 60px;\r\n    border: 1px solid black;\r\n    border-radius: 50%;\r\n}\r\n\r\n\r\n#main-page {\r\n    margin-top: 135px;\r\n}\r\n\r\n#main-page table * {\r\n    font-size: var(--font-size);\r\n}\r\n\r\n.title-and-add-button {\r\n    height: 49px;\r\n}\r\n\r\nh1 {\r\n    font-size: 36px !important;\r\n    margin: 0px;\r\n}\r\n\r\n.btn-primary {\r\n    background-color: var(--corgi-color-fill);\r\n    color: black;\r\n    border: none;\r\n    border-radius: 8px;\r\n}\r\n\r\n.btn-primary:hover {\r\n    background-color: var(--corgi-color-fill);\r\n    color: black;\r\n}\r\n\r\n.add-word-set {\r\n    box-sizing: border-box;\r\n    /* width: 255px; */\r\n    height: 49px;\r\n    margin: 0 !important;\r\n}\r\n\r\n/* .big-button {\r\n    box-sizing: border-box;\r\n    width: 100%;\r\n    height: 49px;\r\n    margin: 0 !important;\r\n} */\r\n\r\n.word-set-name-td {\r\n    width: 65%;\r\n}\r\n\r\n.medium-column-word-sets {\r\n    width: 110px;\r\n}\r\n\r\n.btn-lg {\r\n    width: 100%;\r\n    font-size: var(--font-size-big);\r\n}\r\n\r\n.btn-secondary {\r\n    background-color: var(--blue-fill-50);\r\n    color: black;\r\n    /*padding: 3.5px 7px;*/\r\n    /* border: none; */\r\n    border-radius: 8px;\r\n}\r\n\r\n.btn-secondary:hover {\r\n    background-color: var(--blue-fill-50);\r\n    color: black;\r\n}\r\n\r\n.small-button {\r\n    padding: 3.5px 7px;\r\n}\r\n\r\n.table-div {\r\n    overflow: hidden;\r\n    border-radius: 8px;\r\n    margin-top: 45px;\r\n}\r\n\r\n.table > :not(caption) > * > * {\r\n    padding: 10px 20px;\r\n}\r\n\r\n.table-striped > thead {\r\n    background-color: var(--corgi-color-fill-15);\r\n}\r\n\r\n.table-striped > tbody > tr:nth-of-type(even) > * {\r\n    --bs-table-accent-bg: var(--corgi-color-fill-15);\r\n}\r\n\r\n.table-striped > tbody > tr:nth-of-type(odd) > * {\r\n    --bs-table-accent-bg: white;\r\n}\r\n\r\ntd, th {\r\n    border-style: none;\r\n    vertical-align: middle;\r\n}\r\n\r\n.small-column {\r\n    width: 20px;\r\n}\r\n\r\n.medium-column {\r\n    width: 13%;\r\n}\r\n\r\n.large-column {\r\n    width: 26%;\r\n}\r\n\r\n/* .table-striped>tbody>tr:nth-child(odd)>td, \r\n.table-striped>tbody>tr:nth-child(odd)>th{\r\n   background-color: white !important;\r\n } */\r\n\r\n.table a {\r\n    text-decoration: none;\r\n    color: black;\r\n}\r\n\r\n.training-content {\r\n    width: 1110px;\r\n    padding: 0;\r\n    background-color: var(--corgi-color-fill-15);\r\n    border: 1px solid #777777;\r\n    border-radius: 8px;\r\n    overflow: hidden;\r\n}\r\n\r\n.cards-container {\r\n    position: relative;\r\n    /*left: 43px;*/\r\n    left: -463px;\r\n    /*left: -972px;*/\r\n    /*left: 43px;*/\r\n    width: 5090px;\r\n    display: flex;\r\n}\r\n\r\n.card {\r\n    width: 479px;\r\n    height: 360px;\r\n    margin: 30px 15px;\r\n}\r\n\r\n.card-body {\r\n    padding: 30px;\r\n}\r\n\r\n.welcoming-card-body {\r\n    padding-top: 40px;\r\n    display: flex;\r\n    align-items: center;\r\n}\r\n\r\n.big-corgi-image {\r\n    width: 230px;\r\n}\r\n\r\n.welcoming-corgi-words {\r\n    display: flex;\r\n    justify-content: center;\r\n    padding-top: 25px;\r\n    background-image: url(\"/images/welcome-bg.svg\");\r\n    background-repeat: no-repeat;\r\n}\r\n\r\n.card *{\r\n    font-size: 14px;\r\n}\r\n\r\n.right-corgi-words {\r\n    /*display: flex;*/\r\n    /*justify-content: center;*/\r\n    padding-top: 12px;\r\n    background-image: url(\"/images/right-bg.svg\");\r\n    background-repeat: no-repeat;\r\n    background-size: 100%;\r\n}\r\n\r\n.right-corgi-words>div {\r\n    font-size: 14px;\r\n}\r\n\r\n.previous-card-corgi {\r\n    width: 105px;\r\n}\r\n\r\n.previous-card-word-container * {\r\n    font-size: 12px;\r\n}\r\n\r\n.previous-card-word-container {\r\n    height: 190px;\r\n    overflow-y: auto;\r\n    overflow-x: hidden;\r\n}\r\n\r\n/*.previous-card-word-container::-webkit-scrollbar { width: 0 !important }*/\r\n\r\n.previous-card-word-content {\r\n    min-height: 190px;\r\n}\r\n\r\n.card-word-and-translation * {\r\n    font-size: var(--font-size);\r\n}\r\n\r\n.card-labels {\r\n    color: var(--blue-fill);\r\n}\r\n\r\n.test-class {\r\n}\r\n\r\n.previous-card-examples>ul {\r\n    list-style-type: decimal;\r\n    margin-left: 15px;\r\n}\r\n\r\n.new-card-word-label {\r\n    padding-top: 7.5px;\r\n}\r\n\r\n.new-card-corgi {\r\n    width: 100%;\r\n}\r\n\r\n.hint-corgi-words {\r\n    /*display: flex;*/\r\n    /*justify-content: center;*/\r\n    padding-top: 17px;\r\n    background-image: url(\"/images/hint-bg.svg\");\r\n    background-repeat: no-repeat;\r\n    background-size: 100%;\r\n}\r\n\r\n.farewell-corgi-words {\r\n    display: flex;\r\n    justify-content: center;\r\n    padding-top: 17px;\r\n    background-image: url(\"/images/welcome-bg.svg\");\r\n    background-repeat: no-repeat;\r\n}\r\n\r\n.farewell-corgi-words>div {\r\n    font-size: 14px;\r\n}\r\n\r\n.btn-card {\r\n    font-size: 14px;\r\n}\r\n\r\n.try-again-btn {\r\n    width: 119px;\r\n}\r\n\r\n\r\n\r\nul {\r\n    list-style-type: none;\r\n    margin: 0;\r\n    padding: 0;\r\n}\r\n\r\n.hide {\r\n    display: none;\r\n}\r\n\r\n.show {\r\n    display: block;\r\n}\r\n\r\n.result-right {\r\n    color: green;\r\n}\r\n\r\n.result-wrong {\r\n    color: red;\r\n}\r\n\r\n.language {\r\n    color: grey;\r\n}\r\n\r\n.modal-form-element {\r\n    padding-bottom: 10px;\r\n}\r\n\r\n.word {\r\n    display: flex;\r\n    flex-wrap: nowrap;\r\n}\r\n\r\n.word > div {\r\n    margin: 10px;\r\n    width: 200px;\r\n}\r\n\r\n.word > div.number {\r\n    width: 50px;\r\n}\r\n\r\n.add-word-set {\r\n    margin: 10px 0;\r\n}\r\n\r\n.word-set-name-list {\r\n    text-decoration: none;\r\n    color: black;\r\n    cursor: pointer;\r\n}\r\n\r\n.modal {\r\n    position: fixed;\r\n    top: 0px;\r\n    left: 0px;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    width: 100%;\r\n    height: 100%;\r\n}\r\n\r\n.close {\r\n    border-width: 0;\r\n    background-color: white;\r\n}\r\n\r\n/* .modal__close{\r\n    position:absolute;\r\n    top:8px;right:14px;\r\n    font-size:30px;\r\n    color:#000;opacity:.5;\r\n    font-weight:700;\r\n    border:none;\r\n    background-color:transparent;\r\n    cursor:pointer\r\n} */\r\n\r\n\r\n/*\r\n.modal{\r\n    position: fixed;\r\n    top: 0px;\r\n    left: 0px;\r\n    background-color: rgba(0,0,0,.5);\r\n    width: 100%;\r\n    height: 100%;\r\n}\r\n\r\n.modal__content {\r\n    border: 1px solid black;\r\n    position: absolute;\r\n    overflow:hidden;\r\n    padding: 10px;\r\n    background-color: white;\r\n}\r\n\r\n.add-word-set {\r\n    margin-top: 10px;\r\n}\r\n\r\n.modal__dialog {\r\n    max-width: 500px;\r\n    margin: 40px auto;\r\n}\r\n\r\n.modal-close {\r\n    position: absolute;\r\n    top: 10px;\r\n    right: 10px;\r\n    cursor:pointer;\r\n    font-size:30px;\r\n    color:#000;opacity:.5;\r\n    font-weight:700;\r\n}*/\r\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, ":root {\r\n    --blue-fill: #25567b;\r\n    --blue-fill-50: rgba(37, 86, 123, 0);\r\n    --corgi-color-fill: #ffc373;\r\n    --corgi-color-fill-15: rgba(255, 195, 115, 0.15);\r\n    --font-size-big: 20px;\r\n    --font-size: 16px;\r\n}\r\n\r\n* {\r\n    font-size: var(--font-size-big);\r\n}\r\n\r\nhtml {\r\n    scroll-behavior: smooth;\r\n}\r\n\r\nbody,\r\nhtml {\r\n    height: 100%;\r\n    margin: 0;\r\n    padding: 0;\r\n}\r\n\r\nbody {\r\n    background-color: #fff;\r\n    font-family: \"Open Sans\", sans-serif;\r\n    font-size: var(--font-size-big);\r\n}\r\n\r\n/*.container {\r\n    padding: 0;\r\n}*/\r\n\r\n.navbar {\r\n    background-color: var(--blue-fill) !important;\r\n    font-size: var(--font-size-big);\r\n    box-sizing: border-box;\r\n    /*height: 80px;*/\r\n}\r\n\r\n.navbar-brand {\r\n    color: var(--corgi-color-fill);\r\n    width: 193px;\r\n    margin-right: 93px;\r\n}\r\n\r\n@media screen and (max-width: 768px) {\r\n    .navbar-brand {\r\n        margin-right: 0;\r\n    }\r\n}\r\n\r\n.navbar-dark .navbar-nav .nav-link {\r\n    color: #fff;\r\n}\r\n\r\n.logo-nav {\r\n    font-size: 50px;\r\n}\r\n\r\n.corgi-logo {\r\n    width: 60px;\r\n    height: 60px;\r\n    border: 1px solid black;\r\n}\r\n\r\n.logo-nav-text {\r\n    width: 118px;\r\n    letter-spacing: 1px;\r\n    font-weight: 600;\r\n    font-family: \"Montserrat\", sans-serif;\r\n    line-height: 1.2;\r\n}\r\n\r\n/* .lang-img {\r\n    width: 20px;\r\n} */\r\n\r\n.navbar-nav {\r\n    width: 370px;\r\n}\r\n\r\n.language * {\r\n    font-size: 14px;\r\n}\r\n\r\n.language label {\r\n    box-sizing: border-box;\r\n    white-space: nowrap;\r\n    /* width: 45px; */\r\n}\r\n\r\n.language select {\r\n    box-sizing: border-box;\r\n    /* width: 130px; */\r\n    border: none;\r\n}\r\n\r\n#languages {\r\n    background-color: var(--blue-fill);\r\n    color: white;\r\n}\r\n\r\n.user-logo {\r\n    width: 60px;\r\n    height: 60px;\r\n    border: 1px solid black;\r\n    border-radius: 50%;\r\n}\r\n\r\n\r\n#main-page {\r\n    margin-top: 135px;\r\n}\r\n\r\n#main-page table * {\r\n    font-size: var(--font-size);\r\n}\r\n\r\n.title-and-add-button {\r\n    height: 49px;\r\n}\r\n\r\nh1 {\r\n    font-size: 36px !important;\r\n    margin: 0px;\r\n}\r\n\r\n.btn-primary {\r\n    background-color: var(--corgi-color-fill);\r\n    color: black;\r\n    border: none;\r\n    border-radius: 8px;\r\n}\r\n\r\n.btn-primary:hover {\r\n    background-color: var(--corgi-color-fill);\r\n    color: black;\r\n}\r\n\r\n.add-word-set {\r\n    box-sizing: border-box;\r\n    /* width: 255px; */\r\n    height: 49px;\r\n    margin: 0 !important;\r\n}\r\n\r\n/* .big-button {\r\n    box-sizing: border-box;\r\n    width: 100%;\r\n    height: 49px;\r\n    margin: 0 !important;\r\n} */\r\n\r\n.word-set-name-td {\r\n    width: 65%;\r\n}\r\n\r\n.medium-column-word-sets {\r\n    width: 110px;\r\n}\r\n\r\n.btn-lg {\r\n    width: 100%;\r\n    font-size: var(--font-size-big);\r\n}\r\n\r\n.btn-secondary {\r\n    background-color: var(--blue-fill-50);\r\n    color: black;\r\n    /*padding: 3.5px 7px;*/\r\n    /* border: none; */\r\n    border-radius: 8px;\r\n}\r\n\r\n.btn-secondary:hover {\r\n    background-color: var(--blue-fill-50);\r\n    color: black;\r\n}\r\n\r\n.btn-secondary:focus {\r\n    background-color: var(--blue-fill-50);\r\n    color: black;\r\n}\r\n\r\n.small-button {\r\n    padding: 3.5px 7px;\r\n}\r\n\r\n.table-div {\r\n    overflow: hidden;\r\n    border-radius: 8px;\r\n    margin-top: 45px;\r\n}\r\n\r\n.table > :not(caption) > * > * {\r\n    padding: 10px 20px;\r\n}\r\n\r\n.table-striped > thead {\r\n    background-color: var(--corgi-color-fill-15);\r\n}\r\n\r\n.table-striped > tbody > tr:nth-of-type(even) > * {\r\n    --bs-table-accent-bg: var(--corgi-color-fill-15);\r\n}\r\n\r\n.table-striped > tbody > tr:nth-of-type(odd) > * {\r\n    --bs-table-accent-bg: white;\r\n}\r\n\r\ntd, th {\r\n    border-style: none;\r\n    vertical-align: middle;\r\n}\r\n\r\n.small-column {\r\n    width: 20px;\r\n}\r\n\r\n.medium-column {\r\n    width: 13%;\r\n}\r\n\r\n.large-column {\r\n    width: 26%;\r\n}\r\n\r\n/* .table-striped>tbody>tr:nth-child(odd)>td, \r\n.table-striped>tbody>tr:nth-child(odd)>th{\r\n   background-color: white !important;\r\n } */\r\n\r\n.table a {\r\n    text-decoration: none;\r\n    color: black;\r\n}\r\n\r\n.training-content {\r\n    width: 1110px;\r\n    padding: 0;\r\n    background-color: var(--corgi-color-fill-15);\r\n    border: 1px solid #777777;\r\n    border-radius: 8px;\r\n    overflow: hidden;\r\n}\r\n\r\n.cards-container {\r\n    position: relative;\r\n    left: 43px;\r\n    /*left: -463px;*/\r\n    /*left: -972px;*/\r\n    /*left: 43px;*/\r\n    /*width: 5090px;*/\r\n    /*display: flex;*/\r\n}\r\n\r\n.card {\r\n    width: 479px;\r\n    height: 360px;\r\n    margin: 30px 15px;\r\n}\r\n\r\n.card-body {\r\n    padding: 30px;\r\n}\r\n\r\n.welcoming-card-body {\r\n    padding-top: 40px;\r\n    display: flex;\r\n    align-items: center;\r\n}\r\n\r\n.big-corgi-image {\r\n    width: 230px;\r\n}\r\n\r\n.welcoming-corgi-words {\r\n    display: flex;\r\n    justify-content: center;\r\n    padding-top: 25px;\r\n    background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\r\n    background-repeat: no-repeat;\r\n}\r\n\r\n.card *{\r\n    font-size: 14px;\r\n}\r\n\r\n.right-corgi-words {\r\n    /*display: flex;*/\r\n    /*justify-content: center;*/\r\n    padding-top: 12px;\r\n    background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_1___ + ");\r\n    background-repeat: no-repeat;\r\n    background-size: 100%;\r\n}\r\n\r\n.right-corgi-words>div {\r\n    font-size: 14px;\r\n}\r\n\r\n.previous-card-corgi {\r\n    width: 105px;\r\n}\r\n\r\n.previous-card-word-container * {\r\n    font-size: 12px;\r\n}\r\n\r\n.previous-card-word-container {\r\n    height: 190px;\r\n    overflow-y: auto;\r\n    overflow-x: hidden;\r\n}\r\n\r\n/*.previous-card-word-container::-webkit-scrollbar { width: 0 !important }*/\r\n\r\n.previous-card-word-content {\r\n    min-height: 190px;\r\n}\r\n\r\n.card-word-and-translation * {\r\n    font-size: var(--font-size);\r\n}\r\n\r\n.card-labels {\r\n    color: var(--blue-fill);\r\n}\r\n\r\n.test-class {\r\n}\r\n\r\n.previous-card-examples>ul {\r\n    list-style-type: decimal;\r\n    margin-left: 15px;\r\n}\r\n\r\n.new-card-word-label {\r\n    padding-top: 7.5px;\r\n}\r\n\r\n.new-card-corgi {\r\n    width: 100%;\r\n}\r\n\r\n.hint-corgi-words {\r\n    /*display: flex;*/\r\n    /*justify-content: center;*/\r\n    padding-top: 17px;\r\n    background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_2___ + ");\r\n    background-repeat: no-repeat;\r\n    background-size: 100%;\r\n}\r\n\r\n.farewell-corgi-words {\r\n    display: flex;\r\n    justify-content: center;\r\n    padding-top: 17px;\r\n    background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\r\n    background-repeat: no-repeat;\r\n}\r\n\r\n.farewell-corgi-words>div {\r\n    font-size: 14px;\r\n}\r\n\r\n.btn-card {\r\n    font-size: 14px;\r\n}\r\n\r\n\r\n\r\nul {\r\n    list-style-type: none;\r\n    margin: 0;\r\n    padding: 0;\r\n}\r\n\r\n.hide {\r\n    display: none;\r\n}\r\n\r\n.show {\r\n    display: block;\r\n}\r\n\r\n.result-right {\r\n    color: green;\r\n}\r\n\r\n.result-wrong {\r\n    color: red;\r\n}\r\n\r\n.language {\r\n    color: grey;\r\n}\r\n\r\n.modal-form-element {\r\n    padding-bottom: 10px;\r\n}\r\n\r\n.word {\r\n    display: flex;\r\n    flex-wrap: nowrap;\r\n}\r\n\r\n.word > div {\r\n    margin: 10px;\r\n    width: 200px;\r\n}\r\n\r\n.word > div.number {\r\n    width: 50px;\r\n}\r\n\r\n.add-word-set {\r\n    margin: 10px 0;\r\n}\r\n\r\n.word-set-name-list {\r\n    text-decoration: none;\r\n    color: black;\r\n    cursor: pointer;\r\n}\r\n\r\n.modal {\r\n    position: fixed;\r\n    top: 0px;\r\n    left: 0px;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    width: 100%;\r\n    height: 100%;\r\n}\r\n\r\n.close {\r\n    border-width: 0;\r\n    background-color: white;\r\n}\r\n\r\n/* .modal__close{\r\n    position:absolute;\r\n    top:8px;right:14px;\r\n    font-size:30px;\r\n    color:#000;opacity:.5;\r\n    font-weight:700;\r\n    border:none;\r\n    background-color:transparent;\r\n    cursor:pointer\r\n} */\r\n\r\n\r\n/*\r\n.modal{\r\n    position: fixed;\r\n    top: 0px;\r\n    left: 0px;\r\n    background-color: rgba(0,0,0,.5);\r\n    width: 100%;\r\n    height: 100%;\r\n}\r\n\r\n.modal__content {\r\n    border: 1px solid black;\r\n    position: absolute;\r\n    overflow:hidden;\r\n    padding: 10px;\r\n    background-color: white;\r\n}\r\n\r\n.add-word-set {\r\n    margin-top: 10px;\r\n}\r\n\r\n.modal__dialog {\r\n    max-width: 500px;\r\n    margin: 40px auto;\r\n}\r\n\r\n.modal-close {\r\n    position: absolute;\r\n    top: 10px;\r\n    right: 10px;\r\n    cursor:pointer;\r\n    font-size:30px;\r\n    color:#000;opacity:.5;\r\n    font-weight:700;\r\n}*/\r\n", "",{"version":3,"sources":["webpack://./css/style.css"],"names":[],"mappings":"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","sourcesContent":["@import url(\"https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans:wght@300;400&display=swap\");\r\n\r\n:root {\r\n    --blue-fill: #25567b;\r\n    --blue-fill-50: rgba(37, 86, 123, 0);\r\n    --corgi-color-fill: #ffc373;\r\n    --corgi-color-fill-15: rgba(255, 195, 115, 0.15);\r\n    --font-size-big: 20px;\r\n    --font-size: 16px;\r\n}\r\n\r\n* {\r\n    font-size: var(--font-size-big);\r\n}\r\n\r\nhtml {\r\n    scroll-behavior: smooth;\r\n}\r\n\r\nbody,\r\nhtml {\r\n    height: 100%;\r\n    margin: 0;\r\n    padding: 0;\r\n}\r\n\r\nbody {\r\n    background-color: #fff;\r\n    font-family: \"Open Sans\", sans-serif;\r\n    font-size: var(--font-size-big);\r\n}\r\n\r\n/*.container {\r\n    padding: 0;\r\n}*/\r\n\r\n.navbar {\r\n    background-color: var(--blue-fill) !important;\r\n    font-size: var(--font-size-big);\r\n    box-sizing: border-box;\r\n    /*height: 80px;*/\r\n}\r\n\r\n.navbar-brand {\r\n    color: var(--corgi-color-fill);\r\n    width: 193px;\r\n    margin-right: 93px;\r\n}\r\n\r\n@media screen and (max-width: 768px) {\r\n    .navbar-brand {\r\n        margin-right: 0;\r\n    }\r\n}\r\n\r\n.navbar-dark .navbar-nav .nav-link {\r\n    color: #fff;\r\n}\r\n\r\n.logo-nav {\r\n    font-size: 50px;\r\n}\r\n\r\n.corgi-logo {\r\n    width: 60px;\r\n    height: 60px;\r\n    border: 1px solid black;\r\n}\r\n\r\n.logo-nav-text {\r\n    width: 118px;\r\n    letter-spacing: 1px;\r\n    font-weight: 600;\r\n    font-family: \"Montserrat\", sans-serif;\r\n    line-height: 1.2;\r\n}\r\n\r\n/* .lang-img {\r\n    width: 20px;\r\n} */\r\n\r\n.navbar-nav {\r\n    width: 370px;\r\n}\r\n\r\n.language * {\r\n    font-size: 14px;\r\n}\r\n\r\n.language label {\r\n    box-sizing: border-box;\r\n    white-space: nowrap;\r\n    /* width: 45px; */\r\n}\r\n\r\n.language select {\r\n    box-sizing: border-box;\r\n    /* width: 130px; */\r\n    border: none;\r\n}\r\n\r\n#languages {\r\n    background-color: var(--blue-fill);\r\n    color: white;\r\n}\r\n\r\n.user-logo {\r\n    width: 60px;\r\n    height: 60px;\r\n    border: 1px solid black;\r\n    border-radius: 50%;\r\n}\r\n\r\n\r\n#main-page {\r\n    margin-top: 135px;\r\n}\r\n\r\n#main-page table * {\r\n    font-size: var(--font-size);\r\n}\r\n\r\n.title-and-add-button {\r\n    height: 49px;\r\n}\r\n\r\nh1 {\r\n    font-size: 36px !important;\r\n    margin: 0px;\r\n}\r\n\r\n.btn-primary {\r\n    background-color: var(--corgi-color-fill);\r\n    color: black;\r\n    border: none;\r\n    border-radius: 8px;\r\n}\r\n\r\n.btn-primary:hover {\r\n    background-color: var(--corgi-color-fill);\r\n    color: black;\r\n}\r\n\r\n.add-word-set {\r\n    box-sizing: border-box;\r\n    /* width: 255px; */\r\n    height: 49px;\r\n    margin: 0 !important;\r\n}\r\n\r\n/* .big-button {\r\n    box-sizing: border-box;\r\n    width: 100%;\r\n    height: 49px;\r\n    margin: 0 !important;\r\n} */\r\n\r\n.word-set-name-td {\r\n    width: 65%;\r\n}\r\n\r\n.medium-column-word-sets {\r\n    width: 110px;\r\n}\r\n\r\n.btn-lg {\r\n    width: 100%;\r\n    font-size: var(--font-size-big);\r\n}\r\n\r\n.btn-secondary {\r\n    background-color: var(--blue-fill-50);\r\n    color: black;\r\n    /*padding: 3.5px 7px;*/\r\n    /* border: none; */\r\n    border-radius: 8px;\r\n}\r\n\r\n.btn-secondary:hover {\r\n    background-color: var(--blue-fill-50);\r\n    color: black;\r\n}\r\n\r\n.btn-secondary:focus {\r\n    background-color: var(--blue-fill-50);\r\n    color: black;\r\n}\r\n\r\n.small-button {\r\n    padding: 3.5px 7px;\r\n}\r\n\r\n.table-div {\r\n    overflow: hidden;\r\n    border-radius: 8px;\r\n    margin-top: 45px;\r\n}\r\n\r\n.table > :not(caption) > * > * {\r\n    padding: 10px 20px;\r\n}\r\n\r\n.table-striped > thead {\r\n    background-color: var(--corgi-color-fill-15);\r\n}\r\n\r\n.table-striped > tbody > tr:nth-of-type(even) > * {\r\n    --bs-table-accent-bg: var(--corgi-color-fill-15);\r\n}\r\n\r\n.table-striped > tbody > tr:nth-of-type(odd) > * {\r\n    --bs-table-accent-bg: white;\r\n}\r\n\r\ntd, th {\r\n    border-style: none;\r\n    vertical-align: middle;\r\n}\r\n\r\n.small-column {\r\n    width: 20px;\r\n}\r\n\r\n.medium-column {\r\n    width: 13%;\r\n}\r\n\r\n.large-column {\r\n    width: 26%;\r\n}\r\n\r\n/* .table-striped>tbody>tr:nth-child(odd)>td, \r\n.table-striped>tbody>tr:nth-child(odd)>th{\r\n   background-color: white !important;\r\n } */\r\n\r\n.table a {\r\n    text-decoration: none;\r\n    color: black;\r\n}\r\n\r\n.training-content {\r\n    width: 1110px;\r\n    padding: 0;\r\n    background-color: var(--corgi-color-fill-15);\r\n    border: 1px solid #777777;\r\n    border-radius: 8px;\r\n    overflow: hidden;\r\n}\r\n\r\n.cards-container {\r\n    position: relative;\r\n    left: 43px;\r\n    /*left: -463px;*/\r\n    /*left: -972px;*/\r\n    /*left: 43px;*/\r\n    /*width: 5090px;*/\r\n    /*display: flex;*/\r\n}\r\n\r\n.card {\r\n    width: 479px;\r\n    height: 360px;\r\n    margin: 30px 15px;\r\n}\r\n\r\n.card-body {\r\n    padding: 30px;\r\n}\r\n\r\n.welcoming-card-body {\r\n    padding-top: 40px;\r\n    display: flex;\r\n    align-items: center;\r\n}\r\n\r\n.big-corgi-image {\r\n    width: 230px;\r\n}\r\n\r\n.welcoming-corgi-words {\r\n    display: flex;\r\n    justify-content: center;\r\n    padding-top: 25px;\r\n    background-image: url(\"/images/welcome-bg.svg\");\r\n    background-repeat: no-repeat;\r\n}\r\n\r\n.card *{\r\n    font-size: 14px;\r\n}\r\n\r\n.right-corgi-words {\r\n    /*display: flex;*/\r\n    /*justify-content: center;*/\r\n    padding-top: 12px;\r\n    background-image: url(\"/images/right-bg.svg\");\r\n    background-repeat: no-repeat;\r\n    background-size: 100%;\r\n}\r\n\r\n.right-corgi-words>div {\r\n    font-size: 14px;\r\n}\r\n\r\n.previous-card-corgi {\r\n    width: 105px;\r\n}\r\n\r\n.previous-card-word-container * {\r\n    font-size: 12px;\r\n}\r\n\r\n.previous-card-word-container {\r\n    height: 190px;\r\n    overflow-y: auto;\r\n    overflow-x: hidden;\r\n}\r\n\r\n/*.previous-card-word-container::-webkit-scrollbar { width: 0 !important }*/\r\n\r\n.previous-card-word-content {\r\n    min-height: 190px;\r\n}\r\n\r\n.card-word-and-translation * {\r\n    font-size: var(--font-size);\r\n}\r\n\r\n.card-labels {\r\n    color: var(--blue-fill);\r\n}\r\n\r\n.test-class {\r\n}\r\n\r\n.previous-card-examples>ul {\r\n    list-style-type: decimal;\r\n    margin-left: 15px;\r\n}\r\n\r\n.new-card-word-label {\r\n    padding-top: 7.5px;\r\n}\r\n\r\n.new-card-corgi {\r\n    width: 100%;\r\n}\r\n\r\n.hint-corgi-words {\r\n    /*display: flex;*/\r\n    /*justify-content: center;*/\r\n    padding-top: 17px;\r\n    background-image: url(\"/images/hint-bg.svg\");\r\n    background-repeat: no-repeat;\r\n    background-size: 100%;\r\n}\r\n\r\n.farewell-corgi-words {\r\n    display: flex;\r\n    justify-content: center;\r\n    padding-top: 17px;\r\n    background-image: url(\"/images/welcome-bg.svg\");\r\n    background-repeat: no-repeat;\r\n}\r\n\r\n.farewell-corgi-words>div {\r\n    font-size: 14px;\r\n}\r\n\r\n.btn-card {\r\n    font-size: 14px;\r\n}\r\n\r\n\r\n\r\nul {\r\n    list-style-type: none;\r\n    margin: 0;\r\n    padding: 0;\r\n}\r\n\r\n.hide {\r\n    display: none;\r\n}\r\n\r\n.show {\r\n    display: block;\r\n}\r\n\r\n.result-right {\r\n    color: green;\r\n}\r\n\r\n.result-wrong {\r\n    color: red;\r\n}\r\n\r\n.language {\r\n    color: grey;\r\n}\r\n\r\n.modal-form-element {\r\n    padding-bottom: 10px;\r\n}\r\n\r\n.word {\r\n    display: flex;\r\n    flex-wrap: nowrap;\r\n}\r\n\r\n.word > div {\r\n    margin: 10px;\r\n    width: 200px;\r\n}\r\n\r\n.word > div.number {\r\n    width: 50px;\r\n}\r\n\r\n.add-word-set {\r\n    margin: 10px 0;\r\n}\r\n\r\n.word-set-name-list {\r\n    text-decoration: none;\r\n    color: black;\r\n    cursor: pointer;\r\n}\r\n\r\n.modal {\r\n    position: fixed;\r\n    top: 0px;\r\n    left: 0px;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    width: 100%;\r\n    height: 100%;\r\n}\r\n\r\n.close {\r\n    border-width: 0;\r\n    background-color: white;\r\n}\r\n\r\n/* .modal__close{\r\n    position:absolute;\r\n    top:8px;right:14px;\r\n    font-size:30px;\r\n    color:#000;opacity:.5;\r\n    font-weight:700;\r\n    border:none;\r\n    background-color:transparent;\r\n    cursor:pointer\r\n} */\r\n\r\n\r\n/*\r\n.modal{\r\n    position: fixed;\r\n    top: 0px;\r\n    left: 0px;\r\n    background-color: rgba(0,0,0,.5);\r\n    width: 100%;\r\n    height: 100%;\r\n}\r\n\r\n.modal__content {\r\n    border: 1px solid black;\r\n    position: absolute;\r\n    overflow:hidden;\r\n    padding: 10px;\r\n    background-color: white;\r\n}\r\n\r\n.add-word-set {\r\n    margin-top: 10px;\r\n}\r\n\r\n.modal__dialog {\r\n    max-width: 500px;\r\n    margin: 40px auto;\r\n}\r\n\r\n.modal-close {\r\n    position: absolute;\r\n    top: 10px;\r\n    right: 10px;\r\n    cursor:pointer;\r\n    font-size:30px;\r\n    color:#000;opacity:.5;\r\n    font-weight:700;\r\n}*/\r\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

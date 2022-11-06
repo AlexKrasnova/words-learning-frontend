@@ -1,8 +1,9 @@
 <div class="row">
 
     <div class="col-12">
+        <h1 class="training-title mb-4">Training "Word set 1"</h1>
         <div class="col-12 training-content">
-            <div class="cards-container">
+            <div class="cards-container d-flex">
                 <div class="card">
                     <div class="card-body welcoming-card-body">
                         <div class="row">
@@ -17,7 +18,11 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="word-cards d-flex">
+
+                </div>
+
+                <!--<div class="card">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-4"></div>
@@ -51,7 +56,7 @@
                                         <div class="col-9">висок</div>
                                     </div>
                                 </div>
-                                <!--<div class="previous-card-examples mt-1">
+                                <div class="previous-card-examples mt-1">
                                     Examples:
                                     <ul class="previous-card-examples-list">
                                         <li>
@@ -67,7 +72,7 @@
                                             suscipit?
                                         </li>
                                     </ul>
-                                </div>-->
+                                </div>
                                 <div class="previous-card-comment mt-1">
                                     Comment:<br>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic in
                                     inventore non qui voluptate.
@@ -118,9 +123,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
 
-                <div class="card">
+                <div class="card farewell-card">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-7">
@@ -134,12 +139,16 @@
                         <div class="row mt-3">
                             <div class="col-4"></div>
                             <div class="col-4">
-                                <button type="button" class="btn btn-secondary shadow-sm btn-sm btn-card">
+             <!--                   <button type="button" class="btn btn-secondary shadow-sm btn-sm btn-card w-100">
                                     To word set
-                                </button>
+                                </button>-->
+                                <a class="btn btn-secondary shadow-sm btn-sm btn-card w-100 word-set-link" href=""
+                                   onclick="route()" role="button">
+                                    To word set
+                                </a>
                             </div>
                             <div class="col-4">
-                                <a class="btn btn-primary shadow-sm btn-sm btn-card try-again-btn" href=""
+                                <a class="btn btn-primary shadow-sm btn-sm btn-card w-100" href=""
                                    onclick="route()" role="button">
                                     Train again
                                 </a>
@@ -151,9 +160,9 @@
         </div>
     </div>
 </div>
-</div>
+<!--</div>-->
 
-<br><br><br><br><br><br>
+<!--<br><br><br><br><br><br>
 <div class="col-12">
     <h1 class="training-title">Training "Word set 1"</h1>
     <div class="result">
@@ -184,5 +193,60 @@
         <a href="/" onclick="route()">Go to word sets</a>
         <a href="" onclick="route()" id="train-again">Train again</a>
     </div>
+</div>-->
 </div>
+
+<div id="add-word-modal" class="modal hide" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add/edit word</h5>
+                <button data-close type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span data-close aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form data-post id="add-word-form" action="#">
+                    <div class="form-group">
+                        <label for="word-name-input">Word: </label>
+                        <input required id="word-name-input" name="name" class="form-control" type="text"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="word-translation-input">Translation: </label>
+                        <input required id="word-translation-input" name="translation" class="form-control"
+                               type="text"/>
+                    </div>
+                    <hr>
+                    <div id="word-examples" class="modal-form-element">
+                        <div>Examples:</div>
+                        <div id="word-examples-inputs-wrapper">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control word-example-input" placeholder="Example 1" name="example1"
+                                       aria-label="Example 1" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button id="delete-example-1" class="btn btn-outline-secondary" type="button">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="add-example" type="button" class="btn btn-secondary">Add example</button>
+                    <!--                    <div class="modal-form-element">-->
+                    <!--                        <a id="add-example1" href="#">Add example</a>-->
+                    <!--                    </div>-->
+                    <hr>
+                    <div class="form-group">
+                        <label for="word-comment-input">Comment: </label>
+                        <input id="word-comment-input" name="comment" class="form-control" type="text"/>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button id="save-word-button" type="submit" form="add-word-form" class="btn btn-primary">Save</button>
+                <button data-close type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
