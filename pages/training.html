@@ -133,7 +133,7 @@
                                      src="/images/farewell-corgi.jpg" alt="Farewell corgi"/>
                             </div>
                             <div class="col-5 farewell-corgi-words">
-                                <div>Congratulations!<br>Your result - 18/20</div>
+                                <div>Congratulations!<br>Your result - <span id="result">18/20</span></div>
                             </div>
                         </div>
                         <div class="row mt-3">
@@ -160,6 +160,7 @@
         </div>
     </div>
 </div>
+
 <!--</div>-->
 
 <!--<br><br><br><br><br><br>
@@ -196,17 +197,17 @@
 </div>-->
 </div>
 
-<div id="add-word-modal" class="modal hide" tabindex="-1" role="dialog">
+<div id="edit-word-modal" class="modal hide" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add/edit word</h5>
+                <h5 class="modal-title">Edit word</h5>
                 <button data-close type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span data-close aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form data-post id="add-word-form" action="#">
+                <form data-post id="edit-word-form" action="#">
                     <div class="form-group">
                         <label for="word-name-input">Word: </label>
                         <input required id="word-name-input" name="name" class="form-control" type="text"/>
@@ -244,7 +245,7 @@
 
             </div>
             <div class="modal-footer">
-                <button id="save-word-button" type="submit" form="add-word-form" class="btn btn-primary">Save</button>
+                <button id="save-word-button" type="submit" form="edit-word-form" class="btn btn-primary">Save</button>
                 <button data-close type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>

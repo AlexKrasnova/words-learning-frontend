@@ -241,11 +241,20 @@ function addDynamicContentToTrainingPage(id) {
         .then(data => {
             let currentWordSet = data;
             let words = currentWordSet.words;
+            let numberOfExampleInputs = 1;
+            let editedWordId = -1;
+            let editedCardNumber = -1;
+            let numberOfFirstTimeRightAnswers = 0;
+            let previousCard = -1;
 
             words = words.sort((a, b) => 0.5 - Math.random());
 
             const trainingTitle = document.querySelector('.training-title'),
-            wordSetLink = document.querySelector('.word-set-link');
+                wordSetLink = document.querySelector('.word-set-link'),
+                editWordModal = document.querySelector('#edit-word-modal'),
+                wordNameInput = document.querySelector('#word-name-input'),
+                exampleInputsWrapper = document.querySelector('#word-examples-inputs-wrapper'),
+                editWordForm = document.querySelector('#edit-word-form');
 
             wordSetLink.href = `/word-sets/${currentWordSet.id}`;
 
@@ -253,13 +262,30 @@ function addDynamicContentToTrainingPage(id) {
             addCards();
             addEventListenerToHintButtons();
             addEventListenerToForm();
+            bindCloseModalToEvents(editWordModal);
+            addEventListenerToAddExampleElement();
+            addEventListenerToFirstDeleteExampleElement();
+            // addEventListenerToSayWordElements();
 
-            const editWordElements = document.querySelectorAll('.edit-word');
+
+            const editWordElements = document.querySelectorAll('.edit-word'),
+                sayWordElements = document.querySelectorAll('.say-word');
+
             editWordElements.forEach((editWordElement, i) => {
-                editWordElement.addEventListener('click', (e) => {
-                    e.preventDefault();
-                })
+                addEventListenerToEditWordElement(words[i], editWordElement);
             });
+
+            sayWordElements.forEach((sayWordElement, i) => {
+                addEventListenerToSayWordElement(words[i], sayWordElement);
+            })
+
+            bindEventListenerToEditWordForm();
+
+            function addEventListenerToSayWordElement(word, sayWordElement) {
+                sayWordElement.addEventListener('click', (e) => {
+                    e.preventDefault();
+                });
+            }
 
             function addEventListenerToHintButtons() {
                 const hintButtons = document.querySelectorAll('.hint-btn');
@@ -267,8 +293,10 @@ function addDynamicContentToTrainingPage(id) {
                 hintButtons.forEach((hintButton) => {
                     hintButton.addEventListener('click', () => {
                         const cardNumber = hintButton.dataset.number;
-                        const hintElement = document.querySelector(`#hint-${cardNumber}`);
+                        const hintElement = document.querySelector(`#hint-${cardNumber}`),
+                            wrongCorgi = document.querySelector(`#wrong-${cardNumber}`);
                         if (hintElement.classList.contains('hide')) {
+                            (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(wrongCorgi);
                             (0,_utils__WEBPACK_IMPORTED_MODULE_1__.show)(hintElement);
                             hintButton.textContent = 'Hide';
                         } else {
@@ -348,21 +376,6 @@ function addDynamicContentToTrainingPage(id) {
 
                 wordCards.innerHTML = '';
                 words.forEach((word, i) => {
-
-                    let examples = '';
-                    if (word.examples.length > 0) {
-                        examples = 'Examples<br><ul>';
-
-                        word.examples.forEach((example) => {
-                            examples += `<li>${example}</li>`;
-                        })
-                        examples += '</ul>';
-                    }
-                    let comment = '';
-                    if (word.comment) {
-                        comment = `Comment:<br>${word.comment}`;
-                    }
-
                     wordCards.innerHTML += `
                         <div id="card-${i}" class="card">
                             <div id="card-body-question-${i}" class="card-body">
@@ -376,7 +389,7 @@ function addDynamicContentToTrainingPage(id) {
                                             <div class="col-3 card-labels pe-0 new-card-word-label">Word:</div>
                                             <div class="col-9">
                                                 <form data-post action="#" id="training-form-${i}" class="training-form" data-number="${i}">
-                                                    <input required id="word-name-${i}" name="name" class="form-control word-name-input"
+                                                    <input required id="word-name-${i}" name="name"  autocomplete="off" class="form-control word-name-input"
                                                            type="text"/>
                                                 </form>
                                             </div>
@@ -408,7 +421,7 @@ function addDynamicContentToTrainingPage(id) {
                                     <div class="row mb-2">
                                         <div class="col-4"></div>
                                         <div class="col-4">
-                                            <button type="button" class="btn btn-secondary shadow-sm btn-sm btn-card w-100 hint-btn" data-number="${i}">
+                                            <button type="button" id="hint-btn-${i}" class="btn btn-secondary shadow-sm btn-sm btn-card w-100 hint-btn" data-number="${i}">
                                                 Hint
                                             </button>
                                         </div>
@@ -422,46 +435,7 @@ function addDynamicContentToTrainingPage(id) {
                             </div>
                
                             <div id="card-body-answer-${i}" class="card-body hide">
-                                <div class="row">
-                                    <div class="col-4"></div>
-                                    <div class="col-4 right-corgi-words d-flex justify-content-center">
-                                        <div>Right!</div>
-                                    </div>
-                                    <div class="col-4">
-                                        <img class="d-block rounded-circle previous-card-corgi"
-                                             src="/images/previous-card-corgi.jpg" alt="Previous card corgi"/>
-                                    </div>
-                                </div>
-                                <div class="previous-card-word-container mt-3">
-                                    <div class="previous-card-word-content d-flex flex-column justify-content-around">
-                                        <div class="card-word-and-translation">
-                                            <div class="previous-card-word row">
-                                                <div class="col-3 card-labels pe-0">Word:</div>
-                                                <div class="col-7">
-                                                    <span>${words[i].name}</span>&nbsp;&nbsp;
-                                                    <a href="#" id="say-word">
-                                                        <img src="/images/volume-low-solid.svg" alt="Sound"/>
-                                                    </a>
-                                                </div>
-                                                <div class="col-1">
-                                                    <a href="#" id="edit-word-${i}" class="edit-word">
-                                                        <img src="/images/pencil-solid.svg" alt="Edit"/>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="previous-card-word-translation row">
-                                                <div class="col-3 card-labels pe-0">Translation:</div>
-                                                <div class="col-9">${words[i].translation}</div>
-                                            </div>
-                                        </div>
-                                        <div id="previous-card-examples-${i}" class="mt-1">
-                                            ${examples}
-                                        </div>
-                                        <div id="previous-card-comment-${i}" class="mt-1">
-                                            ${comment}
-                                        </div>
-                                    </div>
-                                </div>
+                                ${getAnswerCardBody(i)}
                             </div>
                         </div>
                     `;
@@ -489,58 +463,73 @@ function addDynamicContentToTrainingPage(id) {
                             cardBodyAnswer = document.querySelector(`#card-body-answer-${cardNumber}`),
                             cardBodyQuestion = document.querySelector(`#card-body-question-${cardNumber}`),
                             wrongCorgi = document.querySelector(`#wrong-${cardNumber}`),
+                            hintElement = document.querySelector(`#hint-${cardNumber}`),
                             cardsContainer = document.querySelector(`.cards-container`),
-                            wordNameInputs = document.querySelectorAll('.word-name-input');
+                            wordNameInputs = document.querySelectorAll('.word-name-input'),
+                            hintButton = document.querySelector(`#hint-btn-${cardNumber}`);
 
                         if (wordInput.value === words[cardNumber].name) {
                             (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(cardBodyQuestion);
                             (0,_utils__WEBPACK_IMPORTED_MODULE_1__.show)(cardBodyAnswer);
                             // cardsContainer.style.transform = `translateX(-${(cardNumber) * 509}px)`;
-                            const shift = (cardNumber + 1) * 509
+                            const shift = (cardNumber + 1) * 509;
+                            if (previousCard !== cardNumber) {
+                                numberOfFirstTimeRightAnswers++;
+                            }
                             cardsContainer.style.transform = `translateX(-${shift}px)`;
                             if (cardNumber < words.length - 1) {
                                 wordNameInputs[cardNumber + 1].focus();
+                            } else {
+                                addResultToFarewellCard();
                             }
                         } else {
                             wordInput.style.borderColor = "red";
                             (0,_utils__WEBPACK_IMPORTED_MODULE_1__.show)(wrongCorgi);
+                            (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(hintElement);
+                            hintButton.textContent = 'Hint';
                         }
+                        previousCard = cardNumber;
                     })
 
                 });
             }
 
-            /*function openModal(modal) {
-                show(modal);
+            function addResultToFarewellCard() {
+                const resultElement = document.querySelector('#result');
+                resultElement.textContent = `${numberOfFirstTimeRightAnswers}/${words.length}`;
+            }
+
+            function openModal(modal) {
+                (0,_utils__WEBPACK_IMPORTED_MODULE_1__.show)(modal);
                 wordNameInput.focus();
                 document.body.style.overflow = 'hidden';
             }
 
             function closeModal(modal) {
-                hide(modal);
+                (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(modal);
                 document.body.style.overflow = '';
-/!*                currentWordIndex = -1;
-                numberOfExampleInputs = 1;*!/
+                /*                currentWordIndex = -1;*/
+                numberOfExampleInputs = 1;
                 exampleInputsWrapper.innerHTML = `
-            <div class="input-group mb-3">
-                <input type="text" class="form-control word-example-input" placeholder="Example 1" name="example1"
-                    aria-label="Example 1" aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    <button id="delete-example-1" class="btn btn-outline-secondary" type="button">
-                        Delete
-                    </button>
-                </div>
-            </div>
-        `;
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control word-example-input" placeholder="Example 1" name="example1"
+                            aria-label="Example 1" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button id="delete-example-1" class="btn btn-outline-secondary" type="button">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
                 addEventListenerToFirstDeleteExampleElement();
-                addWordForm.reset();
+                editWordForm.reset();
             }
 
             function addEventListenerToFirstDeleteExampleElement() {
                 const deleteExample1 = document.querySelector('#delete-example-1');
                 deleteExample1.addEventListener('click', (e) => {
                     e.preventDefault();
-                    deleteExample1.parentElement.remove();
+                    deleteExample1.parentElement.parentElement.remove();
                 });
             }
 
@@ -562,11 +551,15 @@ function addDynamicContentToTrainingPage(id) {
             function addEventListenerToEditWordElement(word, editWordElement) {
                 editWordElement.addEventListener('click', (e) => {
                     e.preventDefault();
-                    openModal(addWordModal);
+                    openModal(editWordModal);
+                    const translationInput = document.querySelector('#word-translation-input'),
+                        commentInput = document.querySelector('#word-comment-input');
+
                     wordNameInput.value = word.name;
                     translationInput.value = word.translation;
                     commentInput.value = word.comment;
-                    currentWordIndex = word.id;
+                    editedWordId = word.id;
+                    editedCardNumber = editWordElement.dataset.number;
 
                     let exampleInputs = document.querySelectorAll('.word-example-input');
 
@@ -582,133 +575,155 @@ function addDynamicContentToTrainingPage(id) {
                         }
                     }
                 });
-            }*/
+            }
 
-
-                /*trainingForm.addEventListener('submit', (e) => {
+            function addEventListenerToAddExampleElement() {
+                const addExampleElement = document.querySelector('#add-example');
+                addExampleElement.addEventListener('click', (e) => {
                     e.preventDefault();
-                    show(result);
+                    addExampleInput();
+                });
+            }
 
-                    if (wordInput.value === word.name) {
-                        resultText.textContent = 'Right!';
-                        resultText.classList.add('result-right');
-                        resultText.classList.remove('result-wrong');
-                    } else {
-                        resultText.textContent = 'Wrong';
-                        resultText.classList.remove('result-right');
-                        resultText.classList.add('result-wrong');
-                        hide(previousWord);
-                        return;
+            function addExampleInput() {
+                numberOfExampleInputs++;
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control word-example-input" placeholder="Example ${numberOfExampleInputs}" name="example${numberOfExampleInputs}" aria-label="Example 1" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button id="delete-example-${numberOfExampleInputs}" class="btn btn-outline-secondary" type="button">Delete</button>
+                        </div>
+                    </div>
+                `;
+                exampleInputsWrapper.append(div);
+                const deleteExample = document.querySelector(`#delete-example-${numberOfExampleInputs}`);
+                deleteExample.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    deleteExample.parentElement.parentElement.remove();
+                });
+
+            }
+
+            function bindEventListenerToEditWordForm() {
+                editWordForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+
+                    const formData = new FormData(editWordForm);
+                    const object = Object.fromEntries(formData.entries());
+                    const wordToAddOrEdit = {};
+                    wordToAddOrEdit.id = editedWordId;
+                    wordToAddOrEdit.name = object.name;
+                    wordToAddOrEdit.translation = object.translation;
+                    wordToAddOrEdit.comment = object.comment;
+                    wordToAddOrEdit.language = window.localStorage.getItem('language');
+                    wordToAddOrEdit.examples = [];
+                    for (let key in object) {
+                        if (key.replace(/\d/g, '') === 'example' && object[key] != '') {
+                            wordToAddOrEdit.examples.push(object[key]);
+                        }
+                    }
+                    if (wordToAddOrEdit.comment === '') {
+                        wordToAddOrEdit.comment = null;
                     }
 
-                    let examples = '';
-                    word.examples.forEach(item => {
-                        examples += `<br>${item}`;
-                    });
+                    /*if (currentWordIndex < 0) {
+                        addNewWordToSet(currentWordSet.id, wordToAddOrEdit)
+                            .then(data => {
+                                renderWordsAndTitle();
+                            })
+                            .finally(() => {
+                                closeModal(addWordModal);
+                            });
+                    } else {*/
+                    (0,_db__WEBPACK_IMPORTED_MODULE_0__.editWord)(editedWordId, wordToAddOrEdit)
+                        .then(data => {
+                            console.log(data.data);
+                            words[editedCardNumber] = wordToAddOrEdit;
+                            renderAnswerContentOfCard(editedCardNumber);
+                        })
+                        .finally(() => {
+                            closeModal(editWordModal);
+                        });
+                    // }
+                });
+            }
 
-                    let previousWordHtml = `
-                <b>translation:</b> ${word.translation}<br>
-                <b>name:</b> ${word.name}
-            `;
-                    if (examples != '') {
-                        previousWordHtml += `<br><b>examples:</b> ${examples}`;
-                    }
-                    previousWordContent.innerHTML = previousWordHtml;
+            function renderAnswerContentOfCard(cardNumber) {
+                const answerContentOfCard = document.querySelector(`#card-body-answer-${cardNumber}`);
+                const word = words[cardNumber];
 
-                    show(previousWord);
+                answerContentOfCard.innerHTML = getAnswerCardBody(cardNumber);
 
-                    if (currentIndex < words.length - 1) {
-                        currentIndex++;
-                        word = words[currentIndex];
-                        wordInput.value = '';
-                        wordLabel.textContent = word.translation;
-                    } else {
-                        hide(training);
-                        show(trainingEnd);
-                    }
-                });*/
+                const editWordElement = document.querySelector(`#edit-word-${cardNumber}`),
+                    sayWordElement = document.querySelector(`#say-word-${cardNumber}`);
+                addEventListenerToEditWordElement(words[cardNumber], editWordElement);
+                addEventListenerToSayWordElement(words[cardNumber], sayWordElement);
+            }
+
+            function getAnswerCardBody(cardNumber) {
+                const word = words[cardNumber];
+                let examples = '';
+                if (word.examples.length > 0) {
+                    examples = 'Examples<br><ul>';
+
+                    word.examples.forEach((example) => {
+                        examples += `<li>${example}</li>`;
+                    })
+                    examples += '</ul>';
+                }
+                let comment = '';
+                if (word.comment) {
+                    comment = `Comment:<br>${word.comment}`;
+                }
+
+                return `<div class="row">
+                                    <div class="col-4"></div>
+                                    <div class="col-4 right-corgi-words d-flex justify-content-center">
+                                        <div>Right!</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <img class="d-block rounded-circle previous-card-corgi"
+                                             src="/images/previous-card-corgi.jpg" alt="Previous card corgi"/>
+                                    </div>
+                                </div>
+                                <div class="previous-card-word-container mt-3">
+                                    <div class="previous-card-word-content d-flex flex-column justify-content-around">
+                                        <div class="card-word-and-translation">
+                                            <div class="previous-card-word row">
+                                                <div class="col-3 card-labels pe-0">Word:</div>
+                                                <div class="col-7">
+                                                    <span>${word.name}</span>&nbsp;&nbsp;
+                                                    <a href="#" id="say-word-${cardNumber}" class="say-word" data-number="${cardNumber}">
+                                                        <img src="/images/volume-low-solid.svg" alt="Sound"/>
+                                                    </a>
+                                                </div>
+                                                <div class="col-1">
+                                                    <a href="#" id="edit-word-${cardNumber}" class="edit-word" data-number="${cardNumber}">
+                                                        <img src="/images/pencil-solid.svg" alt="Edit"/>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="previous-card-word-translation row">
+                                                <div class="col-3 card-labels pe-0">Translation:</div>
+                                                <div class="col-9">${word.translation}</div>
+                                            </div>
+                                        </div>
+                                        <div id="previous-card-examples-${cardNumber}" class="mt-1">
+                                            ${examples}
+                                        </div>
+                                        <div id="previous-card-comment-${cardNumber}" class="mt-1">
+                                            ${comment}
+                                        </div>
+                                    </div>
+                                </div>`;
+            }
         })
-
-    /*const trainingTitle = document.querySelector('.training-title'),
-        result = document.querySelector('.result'),
-        resultText = document.querySelector('.result-text'),
-        previousWord = document.querySelector('.previous-word'),
-        previousWordContent = document.querySelector('.previous-word-content'),
-        training = document.querySelector('.training'),
-        wordInput = document.querySelector('#word-input'),
-        wordLabel = document.querySelector('#word-label'),
-        trainingForm = document.querySelector('#training-form'),
-        hint = document.querySelector('#hint'),
-        trainingEnd = document.querySelector('.training-end'),
-        trainAgain = document.querySelector('#train-again');
-    trainingTitle.textContent = `Training "${currentWordSet.name}"`;
-
-    hide(result);
-    hide(previousWord);
-    hide(trainingEnd);
-
-
-
-    trainAgain.href = `/word-sets/${id}/training`;
-
-    let words = currentWordSet.words;
-    words = words.sort((a, b) => 0.5 - Math.random());
-    let currentIndex = 0;
-
-    let word = words[0];
-
-    wordLabel.textContent = word.translation;
-
-    hint.addEventListener('click', (e) => {
-        e.preventDefault();
-        alert(word.name);
-    });
-
-    trainingForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        show(result);
-
-        if (wordInput.value === word.name) {
-            resultText.textContent = 'Right!';
-            resultText.classList.add('result-right');
-            resultText.classList.remove('result-wrong');
-        } else {
-            resultText.textContent = 'Wrong';
-            resultText.classList.remove('result-right');
-            resultText.classList.add('result-wrong');
-            hide(previousWord);
-            return;
-        }
-
-        let examples = '';
-        word.examples.forEach(item => {
-            examples += `<br>${item}`;
-        });
-
-        let previousWordHtml = `
-            <b>translation:</b> ${word.translation}<br>
-            <b>name:</b> ${word.name}
-        `;
-        if (examples != '') {
-            previousWordHtml += `<br><b>examples:</b> ${examples}`;
-        }
-        previousWordContent.innerHTML = previousWordHtml;
-
-        show(previousWord);
-
-        if (currentIndex < words.length - 1) {
-            currentIndex++;
-            word = words[currentIndex];
-            wordInput.value = '';
-            wordLabel.textContent = word.translation;
-        } else {
-            hide(training);
-            show(trainingEnd);
-        }
-    });*/
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (addDynamicContentToTrainingPage);
+
+
 
 /***/ }),
 
