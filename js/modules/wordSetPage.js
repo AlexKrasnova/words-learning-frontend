@@ -57,8 +57,8 @@ function addDynamicContentToWordSetPage(id) {
                 const editWordSetNameElement = document.querySelector('#edit-wordset-name');
                 editWordSetNameElement.addEventListener('click', (e) => {
                     e.preventDefault();
-                    openModal(editWordSetNameModal);
                     const wordSetNameInput = document.querySelector('#wordset-name-input');
+                    openModal(editWordSetNameModal, wordSetNameInput);
                     wordSetNameInput.value = currentWordSet.name;
                     // currentWordSetIndex = currentWordSet.id;
                 });
@@ -227,7 +227,7 @@ function addDynamicContentToWordSetPage(id) {
         addWordElements.forEach(addWordElement => {
             addWordElement.addEventListener('click', (e) => {
                 e.preventDefault();
-                openModal(addWordModal);
+                openModal(addWordModal, wordNameInput);
             });
         });
     }
@@ -249,7 +249,7 @@ function addDynamicContentToWordSetPage(id) {
     function addEventListenerToEditWordElement(word, editWordElement) {
         editWordElement.addEventListener('click', (e) => {
             e.preventDefault();
-            openModal(addWordModal);
+            openModal(addWordModal, wordNameInput);
             wordNameInput.value = word.name;
             translationInput.value = word.translation;
             commentInput.value = word.comment;
@@ -286,9 +286,9 @@ function addDynamicContentToWordSetPage(id) {
         });
     }
 
-    function openModal(modal) {
+    function openModal(modal, elementToFocus) {
         show(modal);
-        wordNameInput.focus();
+        elementToFocus.focus();
         document.body.style.overflow = 'hidden';
     }
 
