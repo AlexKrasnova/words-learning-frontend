@@ -246,6 +246,7 @@ function addDynamicContentToTrainingPage(id) {
             let editedCardNumber = -1;
             let numberOfFirstTimeRightAnswers = 0;
             let previousCard = -1;
+            let hintCount = 0;
 
             words = words.sort((a, b) => 0.5 - Math.random());
 
@@ -296,6 +297,7 @@ function addDynamicContentToTrainingPage(id) {
                         const hintElement = document.querySelector(`#hint-${cardNumber}`),
                             wrongCorgi = document.querySelector(`#wrong-${cardNumber}`);
                         if (hintElement.classList.contains('hide')) {
+                            hintCount++;
                             (0,_utils__WEBPACK_IMPORTED_MODULE_1__.hide)(wrongCorgi);
                             (0,_utils__WEBPACK_IMPORTED_MODULE_1__.show)(hintElement);
                             hintButton.textContent = 'Hide';
@@ -473,9 +475,10 @@ function addDynamicContentToTrainingPage(id) {
                             (0,_utils__WEBPACK_IMPORTED_MODULE_1__.show)(cardBodyAnswer);
                             // cardsContainer.style.transform = `translateX(-${(cardNumber) * 509}px)`;
                             const shift = (cardNumber + 1) * 509;
-                            if (previousCard !== cardNumber) {
+                            if (previousCard !== cardNumber && hintCount == 0) {
                                 numberOfFirstTimeRightAnswers++;
                             }
+                            hintCount = 0;
                             cardsContainer.style.transform = `translateX(-${shift}px)`;
                             if (cardNumber < words.length - 1) {
                                 wordNameInputs[cardNumber + 1].focus();
