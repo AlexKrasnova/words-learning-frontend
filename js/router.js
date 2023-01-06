@@ -1,4 +1,9 @@
 'use strict';
+// import "bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle";
+import "@fortawesome/fontawesome-free/css/all.css";
+import "/css/style.css";
 import addDynamicContentToHomePage from './modules/homePage';
 import addDynamicContentToWordSetPage from './modules/wordSetPage';
 import addDynamicContentToTrainingPage from './modules/trainingPage';
@@ -30,6 +35,7 @@ const route = (event) => {
     event = event || window.event;
     event.preventDefault();
     window.history.pushState({}, "", event.target.href);
+    //handleLocation();
     updateDynamicRoutesAndHandleLocation();
 };
 
@@ -78,9 +84,12 @@ const updateDynamicRoutesAndHandleLocation = () => {
         .then(() => {
             handleLocation();
         });
+        
 };
 
+//window.onpopstate = handleLocation;
 window.onpopstate = updateDynamicRoutesAndHandleLocation;
 window.route = route;
 
+//handleLocation();
 updateDynamicRoutesAndHandleLocation();

@@ -1,3 +1,379 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans:wght@300;400&display=swap");
+
+:root {
+    --blue-fill: #25567b;
+    --blue-fill-50: rgba(37, 86, 123, 0);
+    --corgi-color-fill: #ffc373;
+    --corgi-color-fill-15: rgba(255, 195, 115, 0.15);
+    --font-size-big: 20px;
+    --font-size: 16px;
+}
+
+* {
+    font-size: var(--font-size-big);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body,
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #fff;
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--font-size-big);
+}
+
+/*.container {
+    padding: 0;
+}*/
+
+.navbar {
+    background-color: var(--blue-fill) !important;
+    font-size: var(--font-size-big);
+    box-sizing: border-box;
+    /*height: 80px;*/
+}
+
+.navbar-brand {
+    color: var(--corgi-color-fill);
+    width: 193px;
+    margin-right: 93px;
+}
+
+@media screen and (max-width: 768px) {
+    .navbar-brand {
+        margin-right: 0;
+    }
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: #fff;
+}
+
+.logo-nav {
+    font-size: 50px;
+}
+
+.corgi-logo {
+    width: 60px;
+    height: 60px;
+    border: 1px solid black;
+}
+
+.logo-nav-text {
+    width: 118px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    font-family: "Montserrat", sans-serif;
+    line-height: 1.2;
+}
+
+/* .lang-img {
+    width: 20px;
+} */
+
+.navbar-nav {
+    width: 370px;
+}
+
+.language * {
+    font-size: 14px;
+}
+
+.language label {
+    box-sizing: border-box;
+    white-space: nowrap;
+    /* width: 45px; */
+}
+
+.language select {
+    box-sizing: border-box;
+    /* width: 130px; */
+    border: none;
+}
+
+#languages {
+    background-color: var(--blue-fill);
+    color: white;
+}
+
+.user-logo {
+    width: 60px;
+    height: 60px;
+    border: 1px solid black;
+    border-radius: 50%;
+}
+
+
+#main-page {
+    margin-top: 135px;
+}
+
+#main-page table * {
+    font-size: var(--font-size);
+}
+
+.title-and-add-button {
+    height: 49px;
+}
+
+h1 {
+    font-size: 36px !important;
+    margin: 0px;
+}
+
+.btn-primary {
+    background-color: var(--corgi-color-fill);
+    color: black;
+    border: none;
+    border-radius: 8px;
+}
+
+.btn-primary:hover {
+    background-color: var(--corgi-color-fill);
+    color: black;
+}
+
+.add-word-set {
+    box-sizing: border-box;
+    /* width: 255px; */
+    height: 49px;
+    margin: 0 !important;
+}
+
+/* .big-button {
+    box-sizing: border-box;
+    width: 100%;
+    height: 49px;
+    margin: 0 !important;
+} */
+
+.word-set-name-td {
+    width: 65%;
+}
+
+.medium-column-word-sets {
+    width: 110px;
+}
+
+.btn-lg {
+    width: 100%;
+    font-size: var(--font-size-big);
+}
+
+.btn-secondary {
+    background-color: var(--blue-fill-50);
+    color: black;
+    /*padding: 3.5px 7px;*/
+    /* border: none; */
+    border-radius: 8px;
+}
+
+.btn-secondary:hover {
+    background-color: var(--blue-fill-50);
+    color: black;
+}
+
+.btn-secondary:focus {
+    background-color: var(--blue-fill-50);
+    color: black;
+}
+
+.small-button {
+    padding: 3.5px 7px;
+}
+
+.table-div {
+    overflow: hidden;
+    border-radius: 8px;
+    margin-top: 45px;
+}
+
+.table > :not(caption) > * > * {
+    padding: 10px 20px;
+}
+
+.table-striped > thead {
+    background-color: var(--corgi-color-fill-15);
+}
+
+.table-striped > tbody > tr:nth-of-type(even) > * {
+    --bs-table-accent-bg: var(--corgi-color-fill-15);
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-accent-bg: white;
+}
+
+td, th {
+    border-style: none;
+    vertical-align: middle;
+}
+
+.small-column {
+    width: 20px;
+}
+
+.medium-column {
+    width: 13%;
+}
+
+.large-column {
+    width: 26%;
+}
+
+/* .table-striped>tbody>tr:nth-child(odd)>td, 
+.table-striped>tbody>tr:nth-child(odd)>th{
+   background-color: white !important;
+ } */
+
+.table a {
+    text-decoration: none;
+    color: black;
+}
+
+.training-content {
+    width: 1110px;
+    padding: 0;
+    background-color: var(--corgi-color-fill-15);
+    border: 1px solid #777777;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.cards-container {
+    position: relative;
+    left: 43px;
+    /*left: -463px;*/
+    /*left: -972px;*/
+    /*left: 43px;*/
+    /*width: 5090px;*/
+    /*display: flex;*/
+}
+
+.card {
+    width: 479px;
+    height: 360px;
+    margin: 30px 15px;
+}
+
+.card-body {
+    padding: 30px;
+}
+
+.welcoming-card-body {
+    padding-top: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.big-corgi-image {
+    width: 230px;
+}
+
+.welcoming-corgi-words {
+    display: flex;
+    justify-content: center;
+    padding-top: 25px;
+    background-image: url("/images/welcome-bg.svg");
+    background-repeat: no-repeat;
+}
+
+.card *{
+    font-size: 14px;
+}
+
+.right-corgi-words {
+    /*display: flex;*/
+    /*justify-content: center;*/
+    padding-top: 12px;
+    background-image: url("/images/right-bg.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.right-corgi-words>div {
+    font-size: 14px;
+}
+
+.previous-card-corgi {
+    width: 105px;
+}
+
+.previous-card-word-container * {
+    font-size: 12px;
+}
+
+.previous-card-word-container {
+    height: 190px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/*.previous-card-word-container::-webkit-scrollbar { width: 0 !important }*/
+
+.previous-card-word-content {
+    min-height: 190px;
+}
+
+.card-word-and-translation * {
+    font-size: var(--font-size);
+}
+
+.card-labels {
+    color: var(--blue-fill);
+}
+
+.test-class {
+}
+
+.previous-card-examples>ul {
+    list-style-type: decimal;
+    margin-left: 15px;
+}
+
+.new-card-word-label {
+    padding-top: 7.5px;
+}
+
+.new-card-corgi {
+    width: 100%;
+}
+
+.hint-corgi-words {
+    /*display: flex;*/
+    /*justify-content: center;*/
+    padding-top: 17px;
+    background-image: url("/images/hint-bg.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.farewell-corgi-words {
+    display: flex;
+    justify-content: center;
+    padding-top: 17px;
+    background-image: url("/images/welcome-bg.svg");
+    background-repeat: no-repeat;
+}
+
+.farewell-corgi-words>div {
+    font-size: 14px;
+}
+
+.btn-card {
+    font-size: 14px;
+}
+
+
+
 ul {
     list-style-type: none;
     margin: 0;
@@ -21,11 +397,11 @@ ul {
 }
 
 .language {
-    color: grey;   
+    color: grey;
 }
 
 .modal-form-element {
-    padding-bottom: 10px; 
+    padding-bottom: 10px;
 }
 
 .word {
@@ -49,7 +425,21 @@ ul {
 .word-set-name-list {
     text-decoration: none;
     color: black;
-    cursor: pointer;   
+    cursor: pointer;
+}
+
+.modal {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background-color: rgba(0, 0, 0, .5);
+    width: 100%;
+    height: 100%;
+}
+
+.close {
+    border-width: 0;
+    background-color: white;
 }
 
 /* .modal__close{
@@ -63,6 +453,8 @@ ul {
     cursor:pointer
 } */
 
+
+/*
 .modal{
     position: fixed;
     top: 0px;
@@ -73,7 +465,7 @@ ul {
 }
 
 .modal__content {
-    border: 1px solid black; 
+    border: 1px solid black;
     position: absolute;
     overflow:hidden;
     padding: 10px;
@@ -97,4 +489,4 @@ ul {
     font-size:30px;
     color:#000;opacity:.5;
     font-weight:700;
-}
+}*/
