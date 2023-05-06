@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  web:
+    container_name: web
+    image: "pirogsoft/words-learning-web:0.0.1"
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+  backend:
+    container_name: backend
+    image: "pirogsoft/words-learning-backend:0.0.1"
+    ports:
+      - "8080:8080"
+    environment:
+      spring.datasource.url: jdbc:postgresql://backend_postgres:5432/words_learning_backend
+    depends_on:
+      - backend_postgres
+  backend_postgres:
+    container_name: backend_postgres
+    image: "postgres:11.1"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: words_learning_backend
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
